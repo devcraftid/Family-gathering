@@ -389,7 +389,7 @@ html{scroll-behavior:smooth}body{font-size:13px;line-height:1.55;-webkit-font-sm
 <header class="topbar">
   <div class="brand"><span>Family Gathering<br>KP Waringin</span></div>
   <input id="globalSearch" class="global-search" placeholder="⌕ Cari nama peserta atau nomor kursi…" aria-label="Cari peserta">
-  <div class="topmeta">Family Gathering KP Waringin<small id="eventMeta">17 November 2026 · Kawah Putih, Bogor</small></div>
+  <div class="topmeta">Family Gathering KP Waringin<small id="eventMeta">1 November 2026 · Kawah Putih, Ciwidey, Bandung</small></div>
   <button id="publicTab" class="btn ghost" type="button">Halaman Publik</button><button id="adminTab" class="btn primary" type="button">Admin</button>
 </header>
 <div class="layout">
@@ -468,8 +468,33 @@ html{scroll-behavior:smooth}body{font-size:13px;line-height:1.55;-webkit-font-sm
       <div class="card"><div class="cardhead"><h3>Ekspor Data</h3></div><div class="cardbody actions"><button class="btn primary" id="exportCsv">Unduh Data Kursi (CSV)</button><button class="btn green" id="exportAttendance">Unduh Absensi (CSV)</button><button class="btn ghost" id="printReport">Cetak Laporan</button></div></div>
     </section>
     <section class="adminpage hidden" id="page-settings">
-      <div class="pagehead"><div><h1>Pengaturan</h1><p>Informasi event dan status integrasi.</p></div></div>
-      <div class="card"><div class="cardhead"><h3>Informasi Family Gathering</h3></div><div class="cardbody"><div class="formgrid"><div class="field"><label>Nama acara</label><input value="Family Gathering KP Waringin" readonly></div><div class="field"><label>Tanggal</label><input value="17 November 2026" readonly></div><div class="field"><label>Tujuan</label><input value="Kawah Putih, Bogor" readonly></div><div class="field"><label>Jam kumpul</label><input value="06.00 WIB" readonly></div></div><p class="status">Pengaturan koneksi database dikelola melalui konfigurasi Supabase di kode.</p><p id="settingsStatus" class="status"></p></div></div>
+      <div class="pagehead"><div><h1>Pengaturan Acara</h1><p>Ubah informasi utama yang tampil di halaman publik.</p></div></div>
+      <div class="card"><div class="cardhead"><h3>Informasi Family Gathering</h3></div><div class="cardbody">
+        <form id="eventSettingsForm"><div class="formgrid">
+          <div class="field"><label>Nama acara *</label><input id="eventNameInput" maxlength="150" required value="Family Gathering KP Waringin"></div>
+          <div class="field"><label>Tanggal acara *</label><input id="eventDateInput" type="date" required value="2026-11-01"></div>
+          <div class="field"><label>Tujuan / lokasi *</label><input id="eventLocationInput" maxlength="200" required value="Kawah Putih, Ciwidey, Bandung"></div>
+          <div class="field"><label>Jam kumpul *</label><input id="eventGatherInput" maxlength="40" required value="06.00 WIB"></div>
+          <div class="field"><label>Titik kumpul</label><input id="eventMeetingInput" maxlength="200" value="Kantor KP Waringin"></div>
+          <div class="field"><label>Keterangan acara</label><input id="eventDescriptionInput" maxlength="500" value="Wisata satu hari bersama keluarga besar KP Waringin."></div>
+        </div><div class="actions" style="margin-top:14px"><button class="btn primary" type="submit" id="saveEventSettingsBtn">Simpan Pengaturan</button><button class="btn ghost" type="button" id="resetEventSettingsBtn">Reset Form</button></div><p id="eventSettingsMsg" class="status" role="status"></p></form>
+        <p class="status">Pengaturan disimpan ke tabel <code>event_settings</code> di Supabase. Jalankan SQL setup tambahan yang disertakan bersama file ini.</p><p id="settingsStatus" class="status"></p>
+      </div></div>
+    </section>
+    <section class="adminpage hidden" id="page-rundown">
+      <div class="pagehead"><div><h1>Kelola Rundown</h1><p>Tambah, edit, hapus, dan atur urutan jadwal. Perubahan ditampilkan pada halaman publik.</p></div></div>
+      <div class="twocol">
+        <div class="card"><div class="cardhead"><h3 id="rundownFormTitle">Tambah Kegiatan</h3></div><div class="cardbody">
+          <form id="rundownForm"><input id="rundownId" type="hidden"><div class="formgrid">
+            <div class="field"><label>Waktu mulai *</label><input id="rundownStart" type="time" required></div>
+            <div class="field"><label>Waktu selesai *</label><input id="rundownEnd" type="time" required></div>
+            <div class="field" style="grid-column:1/-1"><label>Nama kegiatan *</label><input id="rundownTitle" maxlength="180" required placeholder="Contoh: Kumpul dan registrasi peserta"></div>
+            <div class="field" style="grid-column:1/-1"><label>Keterangan</label><textarea id="rundownDescription" maxlength="1000" rows="3" placeholder="Detail kegiatan, lokasi, atau arahan panitia"></textarea></div>
+            <div class="field"><label>Urutan tampil</label><input id="rundownOrder" type="number" min="1" step="1" value="1"></div>
+          </div><div class="actions" style="margin-top:14px"><button class="btn primary" type="submit" id="saveRundownBtn">Simpan Kegiatan</button><button class="btn ghost" type="button" id="cancelRundownEdit">Batal / Form Baru</button></div><p class="status" id="rundownFormMsg" role="status"></p></form>
+        </div></div>
+        <div class="card"><div class="cardhead"><div><h3>Daftar Jadwal</h3><p id="rundownCount">Memuat jadwal…</p></div><button class="btn ghost" type="button" id="reloadRundownBtn">Muat Ulang</button></div><div class="tablewrap"><table class="table"><thead><tr><th>Urutan</th><th>Waktu</th><th>Kegiatan</th><th>Aksi</th></tr></thead><tbody id="adminRundownRows"><tr><td colspan="4">Memuat…</td></tr></tbody></table></div></div>
+      </div>
     </section>
   </div>
 </main>
@@ -498,8 +523,8 @@ html{scroll-behavior:smooth}body{font-size:13px;line-height:1.55;-webkit-font-sm
         <p class="landing-subtitle">Family Gathering KP Waringin</p>
         <p class="landing-copy">Satu hari untuk berlibur bersama keluarga besar KP Waringin. Bus disewa khusus untuk rombongan kita—perjalanan sederhana, nyaman, dan penuh kebersamaan.</p>
         <div class="landing-meta">
-          <span><b>▦</b> 17 November 2026</span>
-          <span><b>⌖</b> Kawah Putih, Bogor</span>
+          <span><b>▦</b> 1 November 2026</span>
+          <span><b>⌖</b> Kawah Putih, Ciwidey, Bandung</span>
           <span><b>◷</b> Berangkat 06.00 WIB</span>
         </div>
         <div class="landing-actions">
@@ -512,7 +537,7 @@ html{scroll-behavior:smooth}body{font-size:13px;line-height:1.55;-webkit-font-sm
     </section>
 
     <section class="landing-highlights" aria-label="Informasi singkat acara">
-      <article class="landing-highlight"><span class="highlight-icon">▦</span><div><small>TANGGAL ACARA</small><b>17 November 2026</b><p>Catat tanggalnya</p></div></article>
+      <article class="landing-highlight"><span class="highlight-icon">▦</span><div><small>TANGGAL ACARA</small><b>1 November 2026</b><p>Catat tanggalnya</p></div></article>
       <article class="landing-highlight"><span class="highlight-icon">⌖</span><div><small>TITIK KUMPUL</small><b>Kantor KP Waringin</b><p>Datang sebelum berangkat</p></div></article>
       <article class="landing-highlight"><span class="highlight-icon">◷</span><div><small>JAM KEBERANGKATAN</small><b>06.00 WIB</b><p>Mohon tepat waktu</p></div></article>
       <article class="landing-highlight"><span class="highlight-icon">♧</span><div><small>KAPASITAS BUS</small><b>Bus sewaan · 59 kursi</b><p>Pilih kursi sesuai kebutuhan</p></div></article>
@@ -545,7 +570,7 @@ html{scroll-behavior:smooth}body{font-size:13px;line-height:1.55;-webkit-font-sm
   <div class="public-view-section hidden" id="publicPage-info"><div class="public-back-row"><button type="button" class="btn ghost" data-public-back>← Kembali</button></div>
     <div class="card"><div class="cardhead"><div><h2>Informasi Family Gathering</h2><p>Informasi perjalanan privat satu hari khusus rombongan KP Waringin.</p></div></div>
       <div class="cardbody"><div class="info-grid">
-        <div class="tile">Tanggal Acara<b>17 November 2026</b></div>
+        <div class="tile">Tanggal Acara<b>1 November 2026</b></div>
         <div class="tile">Tujuan<b>Kawah Putih</b></div>
         <div class="tile">Jam Keberangkatan<b>06.00 WIB</b></div>
         <div class="tile">Titik Kumpul<b>Kantor KP Waringin</b></div>
@@ -568,18 +593,10 @@ html{scroll-behavior:smooth}body{font-size:13px;line-height:1.55;-webkit-font-sm
   <div class="public-view-section hidden" id="publicPage-rundown">
     <div class="public-back-row"><button type="button" class="btn ghost" data-public-back>← Kembali</button></div>
     <div class="card" style="max-width:900px;margin:10px auto">
-      <div class="cardhead"><div><span class="section-kicker">JADWAL KEGIATAN</span><h2>Rundown Family Gathering</h2><p>17 November 2026 · Perjalanan satu hari rombongan KP Waringin</p></div></div>
+      <div class="cardhead"><div><span class="section-kicker">JADWAL KEGIATAN</span><h2 id="publicRundownTitle">Rundown Family Gathering</h2><p id="publicRundownMeta">1 November 2026 · Kawah Putih, Ciwidey, Bandung</p></div></div>
       <div class="cardbody">
         <div class="infobox" style="margin-bottom:14px"><b>Catatan</b><p class="status">Jam di bawah merupakan rancangan awal dan dapat disesuaikan panitia. Pastikan konfirmasi jadwal final sebelum hari keberangkatan.</p></div>
-        <div class="tablewrap"><table class="table" style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left;padding:12px">Waktu</th><th style="text-align:left;padding:12px">Kegiatan</th><th style="text-align:left;padding:12px">Keterangan</th></tr></thead><tbody>
-        <tr><td style="padding:12px;border-top:1px solid #e5ebf3;white-space:nowrap">05.30–06.00</td><td style="padding:12px;border-top:1px solid #e5ebf3">Kumpul peserta</td><td style="padding:12px;border-top:1px solid #e5ebf3">Di titik kumpul Kantor KP Waringin, cek nama dan kursi.</td></tr>
-        <tr><td style="padding:12px;border-top:1px solid #e5ebf3;white-space:nowrap">06.00–09.00</td><td style="padding:12px;border-top:1px solid #e5ebf3">Perjalanan berangkat</td><td style="padding:12px;border-top:1px solid #e5ebf3">Berangkat bersama menuju destinasi.</td></tr>
-        <tr><td style="padding:12px;border-top:1px solid #e5ebf3;white-space:nowrap">09.00–09.30</td><td style="padding:12px;border-top:1px solid #e5ebf3">Persiapan & pengarahan</td><td style="padding:12px;border-top:1px solid #e5ebf3">Informasi keselamatan dan pembagian waktu kunjungan.</td></tr>
-        <tr><td style="padding:12px;border-top:1px solid #e5ebf3;white-space:nowrap">09.30–12.00</td><td style="padding:12px;border-top:1px solid #e5ebf3">Wisata & foto bersama</td><td style="padding:12px;border-top:1px solid #e5ebf3">Menikmati Kawah Putih dan menjaga kebersihan area.</td></tr>
-        <tr><td style="padding:12px;border-top:1px solid #e5ebf3;white-space:nowrap">12.00–13.00</td><td style="padding:12px;border-top:1px solid #e5ebf3">Istirahat & makan</td><td style="padding:12px;border-top:1px solid #e5ebf3">Waktu makan dan ibadah.</td></tr>
-        <tr><td style="padding:12px;border-top:1px solid #e5ebf3;white-space:nowrap">13.00–15.00</td><td style="padding:12px;border-top:1px solid #e5ebf3">Kegiatan bebas terarah</td><td style="padding:12px;border-top:1px solid #e5ebf3">Tetap bersama rombongan dan mengikuti arahan panitia.</td></tr>
-        <tr><td style="padding:12px;border-top:1px solid #e5ebf3;white-space:nowrap">15.00–18.00</td><td style="padding:12px;border-top:1px solid #e5ebf3">Perjalanan pulang</td><td style="padding:12px;border-top:1px solid #e5ebf3">Cek jumlah peserta sebelum bus berangkat.</td></tr>
-        </tbody></table></div>
+        <div class="tablewrap"><table class="table" style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left;padding:12px">Waktu</th><th style="text-align:left;padding:12px">Kegiatan</th><th style="text-align:left;padding:12px">Keterangan</th></tr></thead><tbody id="publicRundownRows"><tr><td colspan="3" style="padding:12px">Memuat jadwal rundown…</td></tr></tbody></table></div>
       </div>
     </div>
   </div>
@@ -698,7 +715,7 @@ async function deleteAttendance(id){const row=attendanceData.find(r=>String(r.id
 // Add consistent back navigation to every admin subpage, without duplicating existing controls.
 function ensureAdminBackButtons(){document.querySelectorAll('.adminpage').forEach(section=>{if(section.id==='page-dashboard'||section.querySelector('.admin-back-row'))return;const head=section.querySelector('.pagehead');if(!head)return;const row=document.createElement('div');row.className='admin-back-row';row.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px';row.innerHTML='<button type="button" class="btn ghost" data-admin-back-dashboard>← Kembali ke Dashboard</button><button type="button" class="btn ghost" data-admin-back-public>Keluar ke Halaman Publik</button>';head.parentNode.insertBefore(row,head);});document.querySelectorAll('[data-admin-back-dashboard]').forEach(b=>b.onclick=()=>{goPage('dashboard');window.scrollTo({top:0,behavior:'smooth'})});document.querySelectorAll('[data-admin-back-public]').forEach(b=>b.onclick=()=>setView('public'))}
 
-function goPage(page){document.querySelectorAll('.adminpage').forEach(s=>s.classList.toggle('hidden',s.id!=='page-'+page));document.querySelectorAll('.sidebtn[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='seats')renderMaps();if(page==='participants')updateParticipantRows();if(page==='attendance')updateAttendanceTable();if(page==='booking')updateBookingUI();if(page==='settings')$('settingsStatus').textContent='Status koneksi: '+$('connectionStatus').textContent}
+function goPage(page){document.querySelectorAll('.adminpage').forEach(s=>s.classList.toggle('hidden',s.id!=='page-'+page));document.querySelectorAll('.sidebtn[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='seats')renderMaps();if(page==='participants')updateParticipantRows();if(page==='attendance')updateAttendanceTable();if(page==='booking')updateBookingUI();if(page==='settings'){$('settingsStatus').textContent='Status koneksi: '+$('connectionStatus').textContent;loadEventSettings()}if(page==='rundown'){loadRundown();resetRundownForm()}}
 function setView(view){
  const isPublic=view==='public';
  const quickNav=$('adminQuickNav');if(quickNav)quickNav.classList.toggle('hidden',isPublic||!user);
@@ -736,6 +753,28 @@ document.querySelectorAll('[data-public-back]').forEach(btn=>btn.addEventListene
 $('landingBookBtn')?.addEventListener('click',()=>showPublicPage('booking'));
 $('landingBottomBook')?.addEventListener('click',()=>showPublicPage('booking'));
 $('publicMenuToggle')?.addEventListener('click',()=>document.querySelector('.public-nav')?.classList.toggle('menu-open'));
+
+
+// Event settings and rundown CRUD (requires event_settings and rundown_items SQL setup).
+let eventSettings={id:1,event_name:'Family Gathering KP Waringin',event_date:'2026-11-01',destination:'Kawah Putih, Ciwidey, Bandung',gather_time:'06.00 WIB',meeting_point:'Kantor KP Waringin',description:'Wisata satu hari bersama keluarga besar KP Waringin.'};
+let rundownItems=[];
+function formatEventDate(value){if(!value)return 'Tanggal belum diatur';const d=new Date(value+'T00:00:00');return d.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});}
+function applyEventSettings(){const date=formatEventDate(eventSettings.event_date),loc=eventSettings.destination||'Kawah Putih, Ciwidey, Bandung';const meta=date+' · '+loc;
+ const top=$('eventMeta');if(top)top.textContent=meta;
+ const pub=$('publicRundownMeta');if(pub)pub.textContent=meta+' · Perjalanan satu hari rombongan KP Waringin';
+ const fields={eventNameInput:eventSettings.event_name,eventDateInput:eventSettings.event_date,eventLocationInput:eventSettings.destination,eventGatherInput:eventSettings.gather_time,eventMeetingInput:eventSettings.meeting_point,eventDescriptionInput:eventSettings.description};
+ Object.entries(fields).forEach(([id,val])=>{if($(id)&&document.activeElement!==$(id))$(id).value=val||''});
+ document.querySelectorAll('.landing-meta span').forEach(el=>{if(el.textContent.includes('November')||el.textContent.includes('2026'))el.innerHTML='<b>▦</b> '+esc(date);if(el.textContent.toLowerCase().includes('kawah')||el.textContent.toLowerCase().includes('ciwidey')||el.textContent.toLowerCase().includes('bogor'))el.innerHTML='<b>⌖</b> '+esc(loc)});
+}
+async function loadEventSettings(){try{const {data:row,error}=await db.from('event_settings').select('*').eq('id',1).maybeSingle();if(error)throw error;if(row)eventSettings={...eventSettings,...row};applyEventSettings();if($('eventSettingsMsg'))$('eventSettingsMsg').textContent=row?'Pengaturan berhasil dimuat dari Supabase.':'Belum ada pengaturan tersimpan; nilai awal ditampilkan.';}catch(e){applyEventSettings();if($('eventSettingsMsg'))$('eventSettingsMsg').textContent='Belum dapat membaca event_settings. Jalankan SQL setup tambahan. '+e.message;}}
+async function saveEventSettings(e){e.preventDefault();if(!user||user.app_metadata?.role!=='admin'){ $('eventSettingsMsg').textContent='Hanya admin yang boleh mengubah pengaturan.';return;}const payload={id:1,event_name:$('eventNameInput').value.trim(),event_date:$('eventDateInput').value,destination:$('eventLocationInput').value.trim(),gather_time:$('eventGatherInput').value.trim(),meeting_point:$('eventMeetingInput').value.trim(),description:$('eventDescriptionInput').value.trim(),updated_at:new Date().toISOString()};if(!payload.event_name||!payload.event_date||!payload.destination||!payload.gather_time){$('eventSettingsMsg').textContent='Lengkapi nama acara, tanggal, lokasi, dan jam kumpul.';return;}const btn=$('saveEventSettingsBtn');btn.disabled=true;try{const {data:row,error}=await db.from('event_settings').upsert(payload,{onConflict:'id'}).select().single();if(error)throw error;eventSettings={...eventSettings,...row};applyEventSettings();$('eventSettingsMsg').textContent='Pengaturan berhasil disimpan dan diperbarui.';toast('Pengaturan acara disimpan');}catch(err){$('eventSettingsMsg').textContent='Gagal menyimpan: '+err.message;}finally{btn.disabled=false;}}
+function resetRundownForm(){if(!$('rundownForm'))return;$('rundownForm').reset();$('rundownId').value='';$('rundownOrder').value=String(rundownItems.length+1);$('rundownFormTitle').textContent='Tambah Kegiatan';$('saveRundownBtn').textContent='Simpan Kegiatan';$('rundownFormMsg').textContent='';}
+function renderRundownAdmin(){const body=$('adminRundownRows');if(!body)return;$('rundownCount').textContent=rundownItems.length+' kegiatan';if(!rundownItems.length){body.innerHTML='<tr><td colspan="4">Belum ada jadwal. Tambahkan kegiatan melalui formulir.</td></tr>';return;}body.innerHTML=rundownItems.map((r,i)=>'<tr><td>'+esc(r.sort_order??i+1)+'</td><td style="white-space:nowrap">'+esc((r.start_time||'').slice(0,5))+'–'+esc((r.end_time||'').slice(0,5))+'</td><td><b>'+esc(r.title)+'</b><div class="status">'+esc(r.description||'')+'</div></td><td><div class="actions"><button class="smallbtn" type="button" data-rundown-edit="'+esc(r.id)+'">Edit</button><button class="smallbtn red" type="button" data-rundown-delete="'+esc(r.id)+'">Hapus</button></div></td></tr>').join('');body.querySelectorAll('[data-rundown-edit]').forEach(b=>b.onclick=()=>editRundown(b.dataset.rundownEdit));body.querySelectorAll('[data-rundown-delete]').forEach(b=>b.onclick=()=>deleteRundown(b.dataset.rundownDelete));}
+async function loadRundown(){const pubBody=$('publicRundownRows');if(pubBody)pubBody.innerHTML='<tr><td colspan="3" style="padding:12px">Memuat jadwal…</td></tr>';try{const {data:rows,error}=await db.from('rundown_items').select('*').order('sort_order',{ascending:true}).order('start_time',{ascending:true});if(error)throw error;rundownItems=rows||[];renderRundownAdmin();renderPublicRundown();}catch(err){rundownItems=[];renderRundownAdmin();if(pubBody)pubBody.innerHTML='<tr><td colspan="3" style="padding:12px">Jadwal belum tersedia. Panitia perlu menjalankan SQL setup rundown di Supabase.</td></tr>';if($('rundownFormMsg'))$('rundownFormMsg').textContent='Gagal memuat rundown: '+err.message;}}
+function renderPublicRundown(){const body=$('publicRundownRows');if(!body)return;if(!rundownItems.length){body.innerHTML='<tr><td colspan="3" style="padding:12px">Rundown sedang disiapkan panitia.</td></tr>';return;}body.innerHTML=rundownItems.map(r=>'<tr><td style="padding:12px;border-top:1px solid #e5ebf3;white-space:nowrap">'+esc((r.start_time||'').slice(0,5))+'–'+esc((r.end_time||'').slice(0,5))+'</td><td style="padding:12px;border-top:1px solid #e5ebf3"><b>'+esc(r.title)+'</b></td><td style="padding:12px;border-top:1px solid #e5ebf3">'+esc(r.description||'—')+'</td></tr>').join('');}
+function editRundown(id){const r=rundownItems.find(x=>String(x.id)===String(id));if(!r)return;$('rundownId').value=r.id;$('rundownStart').value=(r.start_time||'').slice(0,5);$('rundownEnd').value=(r.end_time||'').slice(0,5);$('rundownTitle').value=r.title||'';$('rundownDescription').value=r.description||'';$('rundownOrder').value=r.sort_order||1;$('rundownFormTitle').textContent='Edit Kegiatan';$('saveRundownBtn').textContent='Simpan Perubahan';$('rundownFormMsg').textContent='Mode edit aktif.';$('rundownForm').scrollIntoView({behavior:'smooth',block:'center'});}
+async function saveRundown(e){e.preventDefault();if(!user||user.app_metadata?.role!=='admin'){$('rundownFormMsg').textContent='Hanya admin yang boleh mengubah rundown.';return;}const payload={start_time:$('rundownStart').value,end_time:$('rundownEnd').value,title:$('rundownTitle').value.trim(),description:$('rundownDescription').value.trim(),sort_order:Math.max(1,Number($('rundownOrder').value)||1),updated_at:new Date().toISOString()};if(!payload.start_time||!payload.end_time||!payload.title){$('rundownFormMsg').textContent='Lengkapi waktu mulai, waktu selesai, dan nama kegiatan.';return;}if(payload.end_time<payload.start_time){$('rundownFormMsg').textContent='Waktu selesai harus sama atau setelah waktu mulai.';return;}const id=$('rundownId').value;const btn=$('saveRundownBtn');btn.disabled=true;try{const q=id?db.from('rundown_items').update(payload).eq('id',id):db.from('rundown_items').insert(payload);const {error}=await q;if(error)throw error;$('rundownFormMsg').textContent=id?'Kegiatan berhasil diperbarui.':'Kegiatan berhasil ditambahkan.';toast(id?'Rundown diperbarui':'Kegiatan ditambahkan');resetRundownForm();await loadRundown();}catch(err){$('rundownFormMsg').textContent='Gagal menyimpan: '+err.message;}finally{btn.disabled=false;}}
+async function deleteRundown(id){const r=rundownItems.find(x=>String(x.id)===String(id));if(!r||!confirm('Hapus kegiatan "'+r.title+'" dari rundown?'))return;try{const {error}=await db.from('rundown_items').delete().eq('id',id);if(error)throw error;toast('Kegiatan dihapus');await loadRundown();}catch(err){alert('Gagal menghapus kegiatan: '+err.message);}}
 
 // Navigation is single-source: one sidebar menu per page; quick actions route to the same page.
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>goPage(b.dataset.page)));
@@ -778,11 +817,16 @@ if($('publicFindBtn')) $('publicFindBtn').onclick=()=>showPublicPage('find');if(
 $('publicBookingForm')?.insertAdjacentHTML('beforeend','<p id="bookingCheckpoint" class="status">Isian disimpan otomatis di perangkat ini.</p>');
 if($('globalSearch')) $('globalSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){const q=e.target.value.trim();setView('admin');goPage('participants');$('participantSearch').value=q;updateParticipantRows()}});
 if($('publicSearch')) $('publicSearch').addEventListener('input',()=>{if(!$('publicSearch').value.trim()){$('publicSearchResults').replaceChildren();highlightQuery='';renderMaps()}});
+if($('eventSettingsForm'))$('eventSettingsForm').onsubmit=saveEventSettings;
+if($('resetEventSettingsBtn'))$('resetEventSettingsBtn').onclick=()=>{applyEventSettings();if($('eventSettingsMsg'))$('eventSettingsMsg').textContent='Form dikembalikan ke pengaturan terakhir yang dimuat.'};
+if($('rundownForm'))$('rundownForm').onsubmit=saveRundown;
+if($('cancelRundownEdit'))$('cancelRundownEdit').onclick=resetRundownForm;
+if($('reloadRundownBtn'))$('reloadRundownBtn').onclick=loadRundown;
 db.auth.onAuthStateChange((_event,session)=>{user=session?.user||null});
 ensureAdminBackButtons();
 showPublicPage('home');
 setView('public');
-Promise.allSettled([loadData(),loadAttendance()]).then(()=>{restoreFormCheckpoint();if(dataLoadState==='checking')setConnectionState('error','Koneksi belum terverifikasi. Periksa URL/key Supabase dan policy RLS.')});
+Promise.allSettled([loadData(),loadAttendance(),loadEventSettings(),loadRundown()]).then(()=>{restoreFormCheckpoint();if(dataLoadState==='checking')setConnectionState('error','Koneksi belum terverifikasi. Periksa URL/key Supabase dan policy RLS.')});
 window.setTimeout(()=>{if(dataLoadState==='checking')setConnectionState('error','Waktu koneksi habis. Periksa internet, URL/key Supabase, dan policy RLS.')},10000);
 const realtime=db.channel('kp-waringin-live').on('postgres_changes',{event:'*',schema:'public',table:'kursi_bus'},()=>loadData()).on('postgres_changes',{event:'*',schema:'public',table:'absensi'},()=>loadAttendance()).subscribe();
 </script></body></html>

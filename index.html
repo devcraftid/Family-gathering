@@ -580,15 +580,15 @@ html{scroll-behavior:smooth}body{font-size:13px;line-height:1.55;-webkit-font-sm
   <div class="card" id="publicBookingSection" style="margin-top:10px"><div class="cardhead"><div><h2>Booking Kursi Bus</h2><p>Masukkan nama dan pilih kursi kosong. Kursi yang sudah dibooking tidak dapat dipilih lagi.</p></div></div><div class="cardbody"><div class="twocol"><form id="publicBookingForm"><div class="field"><label>Nama lengkap *</label><input id="publicBookingName" required maxlength="100" minlength="2" placeholder="Masukkan nama lengkap"></div><div class="field"><label>Nomor kursi kosong *</label><select id="publicBookingSeat" required><option value="">Pilih kursi tersedia…</option></select></div><div class="field"><label>Nomor HP (opsional)</label><input id="publicBookingPhone" maxlength="30" placeholder="08xxxxxxxxxx"></div><button class="btn primary" type="submit" id="publicBookingSubmit">Konfirmasi Booking</button><p id="publicBookingMsg" class="status" role="status"></p></form><div class="infobox"><b>Informasi Booking</b><p class="status">• Satu kursi hanya untuk satu peserta.<br>• Kursi hijau berarti sudah terisi.<br>• Kursi merah berarti masih kosong.<br>• Booking yang berhasil langsung memperbarui denah.<br>• Jika kursi sudah dipesan orang lain, pilih kursi lain yang tersedia.</p><div id="publicBookingSummary" class="status">Belum ada booking yang dikirim.</div></div></div></div></div>
   </div>
   <div class="public-view-section hidden" id="publicPage-info"><div class="public-back-row"><button type="button" class="btn ghost" data-public-back>← Kembali</button></div>
-    <div class="card"><div class="cardhead"><div><h2>Informasi Family Gathering</h2><p>Informasi perjalanan privat satu hari khusus rombongan KP Waringin.</p></div></div>
+    <div class="card"><div class="cardhead"><div><h2 id="publicInfoTitle">Informasi Family Gathering</h2><p>Informasi perjalanan privat satu hari khusus rombongan KP Waringin.</p></div></div>
       <div class="cardbody"><div class="info-grid">
-        <div class="tile">Tanggal Acara<b>1 November 2026</b></div>
-        <div class="tile">Tujuan<b>Kawah Putih</b></div>
-        <div class="tile">Jam Keberangkatan<b>06.00 WIB</b></div>
-        <div class="tile">Titik Kumpul<b>Kantor KP Waringin</b></div>
+        <div class="tile">Tanggal Acara<b id="publicInfoDate">1 November 2026</b></div>
+        <div class="tile">Tujuan<b id="publicInfoDestination">Kawah Putih</b></div>
+        <div class="tile">Jam Keberangkatan<b id="publicInfoGather">06.00 WIB</b></div>
+        <div class="tile">Titik Kumpul<b id="publicInfoMeeting">Kantor KP Waringin</b></div>
         <div class="tile">Kapasitas Bus<b>59 kursi</b></div>
         <div class="tile">Kontak Panitia<b>Hubungi panitia acara</b></div>
-      </div><p class="status">Acara berlangsung satu hari. Bus disewa khusus untuk rombongan KP Waringin. Mohon hadir tepat waktu dan pastikan nama serta nomor kursi sudah benar.</p></div>
+      </div><p class="status" id="publicInfoDescription">Acara berlangsung satu hari. Bus disewa khusus untuk rombongan KP Waringin. Mohon hadir tepat waktu dan pastikan nama serta nomor kursi sudah benar.</p></div>
     </div>
   </div>
 </section>
@@ -736,7 +736,7 @@ function setView(view){
  $('publicView').classList.toggle('hidden',!isPublic);
  $('adminView').classList.toggle('hidden',isPublic);
  $('sidebar').classList.toggle('hidden',isPublic||!user);
- if(isPublic){$('loginPanel').classList.add('hidden');$('adminPanel').classList.add('hidden');showPublicPage('home');return}
+ if(isPublic){$('loginPanel').classList.add('hidden');$('adminPanel').classList.add('hidden');if(!document.querySelector('.public-view-section:not(.hidden)'))showPublicPage('home');return}
  checkSession();
 }
 async function checkSession(){const {data:s}=await db.auth.getSession();user=s.session?.user||null;if(!user){$('sidebar').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('adminPanel').classList.add('hidden');return}if(user.app_metadata?.role!=='admin'){await db.auth.signOut();user=null;$('sidebar').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('adminPanel').classList.add('hidden');$('loginMsg').textContent='Akun ini belum memiliki role admin. Atur app_metadata.role = admin melalui proses admin yang aman di Supabase.';return}$('loginPanel').classList.add('hidden');$('adminPanel').classList.remove('hidden');$('sidebar').classList.remove('hidden');$('adminLabel').textContent='Admin';$('adminEmail').textContent=user.email||'Panitia Event';await loadData();await loadAttendance()}
@@ -756,8 +756,11 @@ async function generateAttendanceQr(){const msg=$('attendanceQrMsg'),box=$('atte
 if($('generateAttendanceQr'))$('generateAttendanceQr').addEventListener('click',generateAttendanceQr);
 if($('downloadAttendanceQr'))$('downloadAttendanceQr').addEventListener('click',()=>{const box=$('attendanceQrCanvas'),canvas=box.querySelector('canvas'),img=box.querySelector('img');let url;if(canvas)url=canvas.toDataURL('image/png');else if(img){const a=document.createElement('a');a.href=img.src;a.download='QR_Absensi_Family_Gathering_KP_Waringin.png';a.click();return}else{$('attendanceQrMsg').textContent='Generate QR terlebih dahulu.';return}const a=document.createElement('a');a.href=url;a.download='QR_Absensi_Family_Gathering_KP_Waringin.png';a.click()});
 if($('copyAttendanceQrUrl'))$('copyAttendanceQrUrl').addEventListener('click',async()=>{const field=$('attendanceQrUrl');if(!field.value){field.value=attendancePageUrl()}try{await navigator.clipboard.writeText(field.value);$('attendanceQrMsg').textContent='Link absensi berhasil disalin.'}catch(e){field.select();document.execCommand('copy');$('attendanceQrMsg').textContent='Link absensi disalin.'}});
-function showPublicPage(page){
+function showPublicPage(page, options={}){
  const valid=['home','find','booking','info','attendance','rundown'].includes(page)?page:'home';
+ // Simpan halaman publik pada URL agar refresh/back/forward tidak mengembalikan ke halaman lama.
+ if(!options.skipUrlSync){try{const url=new URL(window.location.href);url.searchParams.delete('absen');if(valid==='home')url.searchParams.delete('page');else url.searchParams.set('page',valid);history.replaceState({publicPage:valid},'',url.pathname+url.search+url.hash);}catch(err){console.warn('URL page state:',err)}}
+ try{localStorage.setItem('kpw_public_page',valid)}catch(_e){}
  document.querySelectorAll('.public-view-section').forEach(el=>el.classList.toggle('hidden',el.id!=='publicPage-'+valid));
  document.querySelectorAll('[data-public-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.publicPage===valid));
  if(valid==='find'){setTimeout(()=> $('publicSearch')?.focus({preventScroll:true}),60);renderMaps();}
@@ -778,12 +781,16 @@ $('publicMenuToggle')?.addEventListener('click',()=>document.querySelector('.pub
 let eventSettings={id:1,event_name:'Family Gathering KP Waringin',event_date:'2026-11-01',destination:'Kawah Putih, Ciwidey, Bandung',gather_time:'06.00 WIB',meeting_point:'Kantor KP Waringin',description:'Wisata satu hari bersama keluarga besar KP Waringin.'};
 let rundownItems=[];
 function formatEventDate(value){if(!value)return 'Tanggal belum diatur';const d=new Date(value+'T00:00:00');return d.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});}
-function applyEventSettings(){const date=formatEventDate(eventSettings.event_date),loc=eventSettings.destination||'Kawah Putih, Ciwidey, Bandung';const meta=date+' · '+loc;
+function applyEventSettings(){
+ const date=formatEventDate(eventSettings.event_date),loc=eventSettings.destination||'Kawah Putih, Ciwidey, Bandung',gather=eventSettings.gather_time||'06.00 WIB',meeting=eventSettings.meeting_point||'Kantor KP Waringin',name=eventSettings.event_name||'Family Gathering KP Waringin',description=eventSettings.description||'Informasi perjalanan acara Family Gathering KP Waringin.';
+ const meta=date+' · '+loc;
  const top=$('eventMeta');if(top)top.textContent=meta;
  const pub=$('publicRundownMeta');if(pub)pub.textContent=meta+' · Perjalanan satu hari rombongan KP Waringin';
+ const publicValues={publicInfoDate:date,publicInfoDestination:loc,publicInfoGather:gather,publicInfoMeeting:meeting,publicInfoTitle:'Informasi '+name,publicInfoDescription:description};
+ Object.entries(publicValues).forEach(([id,val])=>{const el=$(id);if(el)el.textContent=val});
  const fields={eventNameInput:eventSettings.event_name,eventDateInput:eventSettings.event_date,eventLocationInput:eventSettings.destination,eventGatherInput:eventSettings.gather_time,eventMeetingInput:eventSettings.meeting_point,eventDescriptionInput:eventSettings.description};
  Object.entries(fields).forEach(([id,val])=>{if($(id)&&document.activeElement!==$(id))$(id).value=val||''});
- document.querySelectorAll('.landing-meta span').forEach(el=>{if(el.textContent.includes('November')||el.textContent.includes('2026'))el.innerHTML='<b>▦</b> '+esc(date);if(el.textContent.toLowerCase().includes('kawah')||el.textContent.toLowerCase().includes('ciwidey')||el.textContent.toLowerCase().includes('bogor'))el.innerHTML='<b>⌖</b> '+esc(loc)});
+ document.querySelectorAll('.landing-meta span').forEach(el=>{const t=el.textContent.toLowerCase();if(t.includes('november')||t.includes('2026')||t.includes('tanggal'))el.innerHTML='<b>▦</b> '+esc(date);else if(t.includes('kawah')||t.includes('ciwidey')||t.includes('bogor')||t.includes('tujuan'))el.innerHTML='<b>⌖</b> '+esc(loc);else if(t.includes('kumpul')||t.includes('06.00')||t.includes('wib'))el.innerHTML='<b>◷</b> '+esc(gather);});
 }
 const SETTINGS_DRAFT_KEY='kpw_event_settings_draft_v1';
 const RUNDOWN_DRAFT_KEY='kpw_rundown_draft_v1';
@@ -890,7 +897,10 @@ if($('cancelRundownEdit'))$('cancelRundownEdit').onclick=resetRundownForm;
 if($('reloadRundownBtn'))$('reloadRundownBtn').onclick=loadRundown;
 db.auth.onAuthStateChange((_event,session)=>{user=session?.user||null});
 ensureAdminBackButtons();
-showPublicPage('home');
+// Prioritaskan QR lama (?absen=1), lalu page di URL, terakhir halaman tersimpan di perangkat.
+let initialPublicPage='home';
+try{const params=new URLSearchParams(window.location.search);if(params.get('absen')==='1')initialPublicPage='attendance';else if(['home','find','booking','info','attendance','rundown'].includes(params.get('page')))initialPublicPage=params.get('page');else{const saved=localStorage.getItem('kpw_public_page');if(['home','find','booking','info','attendance','rundown'].includes(saved))initialPublicPage=saved;}}catch(_e){}
+showPublicPage(initialPublicPage,{skipUrlSync:true});
 setView('public');
 Promise.allSettled([loadData(),loadAttendance(),loadEventSettings(),loadRundown()]).then(()=>{restoreFormCheckpoint();if(dataLoadState==='checking')setConnectionState('error','Koneksi belum terverifikasi. Periksa URL/key Supabase dan policy RLS.')});
 window.setTimeout(()=>{if(dataLoadState==='checking')setConnectionState('error','Waktu koneksi habis. Periksa internet, URL/key Supabase, dan policy RLS.')},10000);

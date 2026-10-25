@@ -1,8 +1,12 @@
-
 {
+  "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/((?!css|js|img|admin\\.html|favicon).*)$",
       "destination": "/index.html"
     }
   ]

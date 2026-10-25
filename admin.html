@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Admin Dashboard | Family Gathering Kampoeng Waringin</title>
+  <meta name="robots" content="noindex, nofollow">
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;850&display=swap" rel="stylesheet">
+  
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Modular Stylesheets -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/icons.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- Admin Topbar -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon" title="Logo Bus Pariwisata HD Kampoeng Waringin">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 100 100" fill="currentColor">
+          <!-- Spion Tanduk (Side Mirrors) -->
+          <path d="M18 24 C11 20 8 28 12 36 C14 40 17 41 18 39 L18 34 C16 34 14 31 15 28 C16 25 18 26 21 27 L21 24 Z" />
+          <path d="M82 24 C89 20 92 28 88 36 C86 40 83 41 82 39 L82 34 C84 34 86 31 85 28 C84 25 82 26 79 27 L79 24 Z" />
+          <!-- Bus Body High Decker -->
+          <path d="M25 14 C25 10 29 8 34 8 L66 8 C71 8 75 10 75 14 L77 74 C77 78 74 80 70 80 L30 80 C26 80 23 78 23 74 Z" />
+          <!-- AC Roof Pod -->
+          <rect x="36" y="5.5" width="28" height="3.5" rx="1.7" fill="currentColor" opacity="0.85" />
+          <!-- Upper Panoramic Windshield HD -->
+          <path d="M28 15.5 C28 14 29.5 12.5 33 12.5 L67 12.5 C70.5 12.5 72 14 72 15.5 L72.5 30 L27.5 30 Z" fill="#ffffff" opacity="0.95" />
+          <!-- Bando Divider with Gold Accent -->
+          <rect x="26" y="31" width="48" height="4.5" rx="1.5" fill="currentColor" />
+          <rect x="38" y="32.5" width="24" height="1.8" rx="0.9" fill="#e9b85b" />
+          <!-- Lower Windshield -->
+          <path d="M27 37 L73 37 L74 55 C74 56.5 73 57.5 71 57.5 L29 57.5 C27 57.5 26 56.5 26 55 Z" fill="#ffffff" opacity="0.95" />
+          <!-- Wipers -->
+          <line x1="37" y1="55" x2="48" y2="46" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          <line x1="57" y1="55" x2="68" y2="46" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          <!-- Eagle Eye Headlights -->
+          <path d="M26 59.5 L33 59.5 L32 65.5 L25 63.5 Z" fill="#e9b85b" />
+          <path d="M74 59.5 L67 59.5 L68 65.5 L75 63.5 Z" fill="#e9b85b" />
+          <circle cx="28.5" cy="62" r="1.4" fill="#ffffff" />
+          <circle cx="71.5" cy="62" r="1.4" fill="#ffffff" />
+          <!-- Grille & Tour Emblem -->
+          <rect x="36" y="60.5" width="28" height="5.5" rx="2" fill="#ffffff" opacity="0.92" />
+          <line x1="40" y1="63.2" x2="60" y2="63.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+          <circle cx="50" cy="63.2" r="2.2" fill="#e9b85b" />
+          <!-- Bumper & Foglamps -->
+          <rect x="25.5" y="68.5" width="49" height="8" rx="4" fill="currentColor" />
+          <circle cx="30" cy="72.5" r="1.8" fill="#ffffff" />
+          <circle cx="70" cy="72.5" r="1.8" fill="#ffffff" />
+          <rect x="42" y="70.5" width="16" height="4" rx="1.2" fill="#142944" />
+          <!-- Wheels -->
+          <rect x="24" y="80" width="7" height="5" rx="1.5" fill="#1e293b" />
+          <rect x="69" y="80" width="7" height="5" rx="1.5" fill="#1e293b" />
+        </svg>
+      </div>
+      <span>Admin Panel · KP Waringin</span>
+    </div>
+
+    <input id="globalSearch" class="global-search" placeholder="⌕ Cari nama peserta atau nomor kursi…" aria-label="Cari peserta">
+
+    <div class="topmeta">
+      Family Gathering Kampoeng Waringin
+      <small id="eventMeta">1 November 2026 · Kawah Putih</small>
+    </div>
+
+    <a href="index.html" class="btn ghost" style="padding:7px 12px; font-size:11px">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+      <span>Halaman Publik</span>
+    </a>
+  </header>
+
+  <!-- Admin App Layout -->
+  <div class="layout">
+    
+    <!-- Admin Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <button class="sidebtn active" data-page="dashboard">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        <span>Dashboard</span>
+      </button>
+
+      <button class="sidebtn" data-page="participants">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Data Peserta</span>
+      </button>
+
+      <button class="sidebtn" data-page="attendance">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
+        <span>Absensi QR</span>
+      </button>
+
+      <button class="sidebtn" data-page="seats">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13h10"/><path d="M5 21v-4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4"/><path d="M6 15V7a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v8"/><path d="M4 11a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2"/><path d="M20 11a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2"/></svg>
+        <span>Denah Kursi</span>
+      </button>
+
+      <button class="sidebtn" data-page="rundown">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
+        <span>Kelola Rundown</span>
+      </button>
+
+      <button class="sidebtn" data-page="highlights">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/><path d="m14 14 1.5-1.5a2 2 0 0 1 2.828 0L21 15"/></svg>
+        <span>Foto & Highlights</span>
+      </button>
+
+      <button class="sidebtn" data-page="reports">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span>Laporan & Backup</span>
+      </button>
+
+      <button class="sidebtn" data-page="settings">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Pengaturan</span>
+      </button>
+
+      <div class="sidefoot">
+        <b>Panitia Pelaksana</b><br>
+        <span id="adminEmail">admin@kp-waringin.id</span><br>
+        <button class="btn red" id="logoutBtn" style="margin-top:12px; width:100%; padding:8px 10px; font-size:11px">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Admin Main View -->
+    <main class="main" id="adminView">
+      
+      <!-- Login Panel (Displayed when unauthenticated) -->
+      <section id="loginPanel" class="card" style="max-width:440px; margin:40px auto">
+        <div class="cardhead">
+          <div>
+            <h2>Login Khusus Admin</h2>
+            <p>Masukkan akun admin Supabase untuk membuka dashboard panitia.</p>
+          </div>
+        </div>
+        <div class="cardbody">
+          <form id="loginForm">
+            <div class="field">
+              <label for="email">Email Admin *</label>
+              <input id="email" type="email" required autocomplete="username" placeholder="admin@email.com">
+            </div>
+            <div class="field">
+              <label for="password">Password *</label>
+              <input id="password" type="password" required autocomplete="current-password" placeholder="••••••••">
+            </div>
+            <button class="btn primary" id="loginBtn" type="submit" style="width:100%">Masuk ke Dashboard</button>
+            <p id="loginMsg" class="status" role="status" style="margin-top:10px"></p>
+          </form>
+        </div>
+      </section>
+
+      <!-- Authenticated Admin Pages Container -->
+      <div id="adminPanel" class="hidden">
+        
+        <!-- ==================================================================
+             SUBPAGE 1: DASHBOARD
+             ================================================================== -->
+        <section class="adminpage" id="page-dashboard">
+          <div class="dashboard-grid">
+            <div class="dashboard-main">
+              <div class="pagehead">
+                <div>
+                  <h1>Dashboard Panitia</h1>
+                  <p>Ringkasan real-time kapasitas kursi, kehadiran, dan aktivitas gathering.</p>
+                </div>
+                <span id="connectionStatus" class="connection-ok">Memeriksa koneksi…</span>
+              </div>
+
+              <!-- Metric Cards -->
+              <div class="metrics">
+                <div class="metric">
+                  <label>Total Peserta</label>
+                  <strong id="statParticipants">0</strong>
+                  <small>Terdaftar pada kursi</small>
+                </div>
+                <div class="metric">
+                  <label>Sudah Hadir</label>
+                  <strong id="statPresent" style="color:#119c58">0</strong>
+                  <small>Kehadiran tercatat</small>
+                </div>
+                <div class="metric">
+                  <label>Belum Hadir</label>
+                  <strong id="statAbsent" style="color:#e8424f">0</strong>
+                  <small>Peserta tersisa</small>
+                </div>
+                <div class="metric">
+                  <label>Kursi Terisi</label>
+                  <strong id="statTaken">0/59</strong>
+                  <small>Kapasitas bus 1</small>
+                </div>
+              </div>
+
+              <!-- Charts -->
+              <div class="charts">
+                <div class="card">
+                  <div class="cardhead">
+                    <div>
+                      <h3>Statistik Kehadiran</h3>
+                      <p>Perbandingan hadir vs belum hadir</p>
+                    </div>
+                  </div>
+                  <div class="cardbody">
+                    <div class="bars" id="attendanceBars">
+                      <div class="barpair">
+                        <i class="bar" style="height:0%"></i>
+                        <i class="bar redbar" style="height:0%"></i>
+                      </div>
+                    </div>
+                    <div class="labels">
+                      <span>Hadir</span>
+                      <span>Belum Hadir</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="cardhead">
+                    <h3>Status Kapasitas Kursi Bus</h3>
+                  </div>
+                  <div class="cardbody donutrow">
+                    <div class="donut" id="seatDonut">
+                      <span id="donutNumber">0<small>Terisi</small></span>
+                    </div>
+                    <div class="legend">
+                      <div><i class="dot" style="background:#10a45a"></i> Terisi <b id="legendTaken">0</b></div>
+                      <div><i class="dot" style="background:#e8424f"></i> Kosong <b id="legendFree">59</b></div>
+                      <div><i class="dot" style="background:#94a3b8"></i> Terkunci <b id="legendLocked">0</b></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Action Grid -->
+              <div class="quickgrid">
+                <button class="quick qblue" data-goto="participants">
+                  <span>＋</span> Tambah Peserta
+                </button>
+                <button class="quick qgreen" data-goto="attendance">
+                  <span>▣</span> Scan QR Kehadiran
+                </button>
+                <button class="quick qorange" data-goto="seats">
+                  <span>▦</span> Denah Kursi
+                </button>
+                <button class="quick qpurple" data-goto="reports">
+                  <span>⬇</span> Ekspor Laporan
+                </button>
+              </div>
+
+              <!-- Recent Activity -->
+              <div class="card">
+                <div class="cardhead">
+                  <div>
+                    <h3>Aktivitas Absensi Terbaru</h3>
+                    <p>Catatan kehadiran yang baru masuk</p>
+                  </div>
+                  <button class="btn ghost" data-goto="attendance" style="padding:6px 12px; font-size:11px">Lihat Semua</button>
+                </div>
+                <div class="tablewrap">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Waktu</th>
+                        <th>Aktivitas</th>
+                        <th>Nama Peserta</th>
+                        <th>Sumber</th>
+                      </tr>
+                    </thead>
+                    <tbody id="recentRows">
+                      <tr><td colspan="4" class="empty">Belum ada aktivitas.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dashboard Side 1: Bus Preview -->
+            <aside class="dashboard-side card">
+              <div class="cardhead">
+                <div>
+                  <h3>Denah Bus 59 Seat</h3>
+                  <p>Bus 1 · Kawah Putih</p>
+                </div>
+                <button class="btn ghost" data-goto="seats" style="padding:6px 10px; font-size:11px">Kelola ↗</button>
+              </div>
+              <div class="cardbody">
+                <div class="bus-preview">
+                  <div class="bushead">
+                    <span class="crew">Crew</span>
+                    <span class="steering">◎</span>
+                    <span class="driver">Driver</span>
+                  </div>
+                  <div class="seatrows" id="dashSeats"></div>
+                  <div class="rear" id="dashRear"></div>
+                </div>
+                <div class="dash-legend">
+                  <span><i class="dot" style="background:#119c58"></i> Terisi</span>
+                  <span><i class="dot" style="background:#e8424f"></i> Kosong</span>
+                </div>
+                <button class="btn primary fullbtn" type="button" data-goto="seats">Buka Pengelolaan Kursi</button>
+              </div>
+            </aside>
+
+            <!-- Dashboard Side 2: Quick QR Actions -->
+            <aside class="dashboard-side card">
+              <div class="cardhead">
+                <div>
+                  <h3>Absensi QR Panitia</h3>
+                  <p>Pindai barcode rombongan</p>
+                </div>
+                <button class="btn ghost" data-goto="attendance" style="padding:6px 10px; font-size:11px">•••</button>
+              </div>
+              <div class="cardbody">
+                <div class="qr-preview">
+                  <div class="scan-corners"><span></span><span></span><span></span><span></span></div>
+                  <div class="qr-symbol">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
+                  </div>
+                  <div class="scan-line"></div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px">
+                  <button class="btn green" type="button" data-goto="attendance">Buka Sesi</button>
+                  <button class="btn primary" type="button" data-goto="attendance">Generate QR</button>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             SUBPAGE 2: DATA PESERTA
+             ================================================================== -->
+        <section class="adminpage hidden" id="page-participants">
+          <div class="pagehead">
+            <div>
+              <h1>Data Peserta Bus</h1>
+              <p>Kelola nama dan nomor kursi peserta bus 59 seat.</p>
+            </div>
+          </div>
+
+          <div class="twocol">
+            <!-- Form Card -->
+            <div class="card">
+              <div class="cardhead">
+                <div>
+                  <h3>Form Tambah / Edit Peserta</h3>
+                  <p>Data tersimpan langsung ke tabel kursi_bus di Supabase</p>
+                </div>
+              </div>
+              <div class="cardbody">
+                <form id="seatForm">
+                  <div class="formgrid">
+                    <div class="field">
+                      <label for="seatNo">Nomor Kursi (1–59) *</label>
+                      <input id="seatNo" type="number" min="1" max="59" required placeholder="Contoh: 15">
+                    </div>
+                    <div class="field">
+                      <label for="seatName">Nama Lengkap *</label>
+                      <input id="seatName" maxlength="100" required placeholder="Nama lengkap peserta">
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label for="seatPhone">Nomor WhatsApp (Opsional)</label>
+                    <input id="seatPhone" maxlength="30" placeholder="08xxxxxxxxxx">
+                  </div>
+                  <div class="actions">
+                    <button class="btn primary" id="saveSeat" type="submit">Simpan Peserta</button>
+                    <button class="btn ghost" id="clearForm" type="reset">Reset Form</button>
+                  </div>
+                  <p id="seatMsg" class="status" role="status" style="margin-top:10px"></p>
+                </form>
+              </div>
+            </div>
+
+            <!-- Search Card -->
+            <div class="card">
+              <div class="cardhead">
+                <div>
+                  <h3>Pencarian Data Peserta</h3>
+                  <p>Cari berdasarkan nama, nomor kursi, atau nomor telepon</p>
+                </div>
+              </div>
+              <div class="cardbody">
+                <input id="participantSearch" class="input" placeholder="Ketik nama atau kursi…">
+                <p class="status" style="margin-top:10px">
+                  Gunakan tombol Edit pada tabel di bawah untuk memperbarui data peserta terpilih.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Participants Table -->
+          <div class="card" style="margin-top:16px">
+            <div class="cardhead">
+              <h3>Daftar Peserta Terdaftar</h3>
+              <span id="participantCount" class="status">0 peserta</span>
+            </div>
+            <div class="tablewrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Kursi</th>
+                    <th>Nama Peserta</th>
+                    <th>Nomor WhatsApp</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="participantRows">
+                  <tr><td colspan="5" class="empty">Memuat data peserta…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             SUBPAGE 3: ABSENSI QR & SESI
+             ================================================================== -->
+        <section class="adminpage hidden" id="page-attendance">
+          <div class="pagehead">
+            <div>
+              <h1>Absensi QR & Manajemen Sesi</h1>
+              <p>Buka sesi absensi (Berangkat, Istirahat, Pulang) dan pantau kehadiran rombongan.</p>
+            </div>
+          </div>
+
+          <!-- Sesi Manager Card -->
+          <div class="card" style="margin-bottom:16px">
+            <div class="cardhead">
+              <div>
+                <h3>Kelola Sesi Absensi Aktif</h3>
+                <p>Peserta hanya dapat check-in ketika admin membuka sesi aktif.</p>
+              </div>
+            </div>
+            <div class="cardbody">
+              <div class="field">
+                <label for="attendanceSessionName">Nama Sesi Absensi *</label>
+                <input id="attendanceSessionName" class="input" value="Berangkat" placeholder="Contoh: Berangkat / Checkpoint 1 / Pulang">
+              </div>
+              <div class="actions">
+                <button class="btn green" id="startAttendanceSession" type="button">Buka Sesi Absensi</button>
+                <button class="btn red" id="closeAttendanceSession" type="button">Tutup Sesi Ini</button>
+              </div>
+              <p id="adminAttendanceSessionStatus" class="status" role="status" style="margin-top:10px; font-weight:700">
+                Memeriksa sesi absensi…
+              </p>
+            </div>
+          </div>
+
+          <!-- Attendance Table -->
+          <div class="card">
+            <div class="cardhead">
+              <div>
+                <h3>Riwayat Kehadiran Masuk</h3>
+                <p>Data absensi peserta dari Supabase</p>
+              </div>
+              <div class="actions">
+                <select id="attendanceSessionFilter" class="input" style="max-width:200px">
+                  <option value="all">Semua Sesi</option>
+                </select>
+                <input id="attendanceFilter" class="input" placeholder="Filter nama…" style="max-width:180px">
+              </div>
+            </div>
+            <div class="tablewrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Waktu</th>
+                    <th>Sesi Acara</th>
+                    <th>Nama Peserta</th>
+                    <th>Kursi</th>
+                    <th>WhatsApp</th>
+                    <th>Sumber</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="adminAttendanceRows">
+                  <tr><td colspan="7" class="empty">Belum ada catatan kehadiran.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             SUBPAGE 4: DENAH KURSI INTERAKTIF
+             ================================================================== -->
+        <section class="adminpage hidden" id="page-seats">
+          <div class="pagehead">
+            <div>
+              <h1>Denah Kursi Bus (59 Seat)</h1>
+              <p>Kelola susunan tempat duduk bus rombongan secara interaktif.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="cardhead">
+              <div>
+                <h3>Bus 1 · Konfigurasi Kursi 2–3</h3>
+                <p>Klik salah satu kursi untuk melihat info atau mengosongkan</p>
+              </div>
+            </div>
+            <div class="cardbody">
+              <div class="seatlayout">
+                <div class="seatmap">
+                  <div class="bushead">
+                    <span class="crew">Crew</span>
+                    <span class="steering">◎</span>
+                    <span class="driver">Driver</span>
+                  </div>
+                  <div class="seatrows" id="admSeats"></div>
+                  <div class="rear" id="admRear"></div>
+                </div>
+
+                <div>
+                  <div class="infobox">
+                    <b>Detail Kursi Terpilih:</b>
+                    <div id="seatDetails" class="seatinfo" style="margin-top:8px">
+                      Pilih kursi pada denah.
+                    </div>
+                  </div>
+                  <button class="smallbtn" id="editSelectedSeat" type="button" onclick="goAdminPage('participants')">Edit Peserta Ini</button>
+                  <button class="smallbtn red" id="releaseSelectedSeat" type="button" onclick="releaseAdminSeat(adminSelectedSeat)">Kosongkan Kursi Ini</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+
+        <!-- ==================================================================
+             SUBPAGE 6: KELOLA RUNDOWN
+             ================================================================== -->
+        <section class="adminpage hidden" id="page-rundown">
+          <div class="pagehead">
+            <div>
+              <h1>Kelola Susunan Rundown</h1>
+              <p>Atur jadwal kegiatan yang tampil di halaman publik.</p>
+            </div>
+          </div>
+
+          <div class="twocol">
+            <!-- Add Rundown Form -->
+            <div class="card">
+              <div class="cardhead">
+                <h3>Tambah Kegiatan Rundown</h3>
+              </div>
+              <div class="cardbody">
+                <form id="rundownForm">
+                  <div class="formgrid">
+                    <div class="field">
+                      <label for="rundownStart">Waktu Mulai *</label>
+                      <input id="rundownStart" type="time" required>
+                    </div>
+                    <div class="field">
+                      <label for="rundownEnd">Waktu Selesai *</label>
+                      <input id="rundownEnd" type="time" required>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label for="rundownTitle">Nama Kegiatan *</label>
+                    <input id="rundownTitle" required placeholder="Contoh: Kumpul & Registrasi">
+                  </div>
+                  <div class="field">
+                    <label for="rundownDescription">Keterangan / Lokasi</label>
+                    <textarea id="rundownDescription" rows="2" placeholder="Detail kegiatan atau arahan panitia…"></textarea>
+                  </div>
+                  <div class="field">
+                    <label for="rundownOrder">Nomor Urutan Tampil</label>
+                    <input id="rundownOrder" type="number" min="1" value="1">
+                  </div>
+                  <button class="btn primary" type="submit">Simpan Kegiatan</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Rundown Table -->
+            <div class="card">
+              <div class="cardhead">
+                <h3>Daftar Rundown Acara</h3>
+              </div>
+              <div class="tablewrap">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Urutan</th>
+                      <th>Waktu</th>
+                      <th>Kegiatan</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminRundownRows">
+                    <tr><td colspan="4" class="empty">Memuat rundown…</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             SUBPAGE 6: FOTO & POPULAR HIGHLIGHTS BERANDA
+             ================================================================== -->
+        <section class="adminpage hidden" id="page-highlights">
+          <div class="pagehead">
+            <div>
+              <h1>Kelola Foto & Popular Highlights Beranda</h1>
+              <p>Upload foto langsung dari perangkat dan atur 4 kartu destinasi / kegiatan unggulan di halaman utama publik.</p>
+            </div>
+            <div class="actions">
+              <button class="btn ghost" id="resetHighlightsBtn" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                <span>Reset ke Default</span>
+              </button>
+              <button class="btn primary" id="saveHighlightsBtn" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                <span>Simpan Semua Perubahan</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="infobox" style="margin-bottom:20px; background:rgba(37,99,235,0.06); border-color:rgba(37,99,235,0.2)">
+            <b style="color:#1d4ed8">Petunjuk Upload Foto Highlights</b>
+            <div style="font-size:12px; margin-top:4px; color:#334155">
+              Anda dapat mengklik tombol <b>Upload Foto Baru</b> pada setiap kartu untuk memilih file foto langsung dari galeri HP atau komputer. Foto otomatis dioptimasi beresolusi HD tanpa memperlambat website. Setelah selesai, klik <b>Simpan Semua Perubahan</b> untuk langsung mengupdate beranda.
+            </div>
+          </div>
+
+          <p id="highlightsGlobalMsg" class="status" role="status" style="margin-bottom:16px"></p>
+
+          <div class="highlights-admin-grid">
+            <!-- Card 1 -->
+            <div class="card hl-admin-card" data-hl-index="0">
+              <div class="cardhead">
+                <div style="display:flex; align-items:center; gap:8px">
+                  <span class="hl-number-badge">1</span>
+                  <div>
+                    <h3 id="hlCardHeading_0">Kartu Highlight #1</h3>
+                    <p style="font-size:11px; margin:0">Destinasi Utama</p>
+                  </div>
+                </div>
+              </div>
+              <div class="cardbody">
+                <div class="hl-media-section">
+                  <div class="hl-preview-frame">
+                    <img id="hlPreview_0" src="" alt="Pratinjau Highlight 1">
+                    <span class="hl-preview-badge" id="hlBadgePreview_0">Spot Foto #1</span>
+                  </div>
+                  <div class="hl-upload-controls">
+                    <input type="file" id="hlFileInput_0" accept="image/*" class="hl-hidden-file">
+                    <button type="button" class="btn ghost hl-file-btn" onclick="document.getElementById('hlFileInput_0').click()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                      <span>Upload Foto Baru</span>
+                    </button>
+                    <input type="url" id="hlUrl_0" class="input" style="font-size:11px" placeholder="Atau paste URL foto web…">
+                  </div>
+                </div>
+
+                <div class="formgrid" style="margin-top:14px">
+                  <div class="field">
+                    <label for="hlTitle_0">Judul Destinasi / Acara *</label>
+                    <input id="hlTitle_0" class="input" placeholder="Contoh: Kawah Putih Utama">
+                  </div>
+                  <div class="field">
+                    <label for="hlCategory_0">Kategori Subtitle</label>
+                    <input id="hlCategory_0" class="input" placeholder="Contoh: Destinasi Utama">
+                  </div>
+                </div>
+
+                <div class="formgrid">
+                  <div class="field">
+                    <label for="hlBadge_0">Label Badge</label>
+                    <input id="hlBadge_0" class="input" placeholder="Contoh: Spot Foto #1">
+                  </div>
+                  <div class="field">
+                    <label for="hlLink_0">Tautan Saat Diklik</label>
+                    <select id="hlLink_0" class="input">
+                      <option value="rundown">Buka Rundown Acara</option>
+                      <option value="booking">Buka Pilih Kursi Bus</option>
+                      <option value="attendance">Buka Absensi QR</option>
+                      <option value="find">Buka Denah & Cari Peserta</option>
+                      <option value="info">Buka Panduan Informasi</option>
+                      <option value="community">Buka Galeri Acara</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="formgrid">
+                  <div class="field">
+                    <label for="hlMetaLeft_0">Detail Kiri (Lokasi / Suasana)</label>
+                    <input id="hlMetaLeft_0" class="input" placeholder="Contoh: Danau Belerang">
+                  </div>
+                  <div class="field">
+                    <label for="hlMetaRight_0">Detail Kanan (Jam / Jadwal)</label>
+                    <input id="hlMetaRight_0" class="input" placeholder="Contoh: Pukul 09:30 WIB">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="card hl-admin-card" data-hl-index="1">
+              <div class="cardhead">
+                <div style="display:flex; align-items:center; gap:8px">
+                  <span class="hl-number-badge">2</span>
+                  <div>
+                    <h3 id="hlCardHeading_1">Kartu Highlight #2</h3>
+                    <p style="font-size:11px; margin:0">Panorama Alam</p>
+                  </div>
+                </div>
+              </div>
+              <div class="cardbody">
+                <div class="hl-media-section">
+                  <div class="hl-preview-frame">
+                    <img id="hlPreview_1" src="" alt="Pratinjau Highlight 2">
+                    <span class="hl-preview-badge" id="hlBadgePreview_1">Sejuk & Asri</span>
+                  </div>
+                  <div class="hl-upload-controls">
+                    <input type="file" id="hlFileInput_1" accept="image/*" class="hl-hidden-file">
+                    <button type="button" class="btn ghost hl-file-btn" onclick="document.getElementById('hlFileInput_1').click()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                      <span>Upload Foto Baru</span>
+                    </button>
+                    <input type="url" id="hlUrl_1" class="input" style="font-size:11px" placeholder="Atau paste URL foto web…">
+                  </div>
+                </div>
+
+                <div class="formgrid" style="margin-top:14px">
+                  <div class="field">
+                    <label for="hlTitle_1">Judul Destinasi / Acara *</label>
+                    <input id="hlTitle_1" class="input" placeholder="Contoh: Kebun Teh Rancabali">
+                  </div>
+                  <div class="field">
+                    <label for="hlCategory_1">Kategori Subtitle</label>
+                    <input id="hlCategory_1" class="input" placeholder="Contoh: Panorama Alam">
+                  </div>
+                </div>
+
+                <div class="formgrid">
+                  <div class="field">
+                    <label for="hlBadge_1">Label Badge</label>
+                    <input id="hlBadge_1" class="input" placeholder="Contoh: Sejuk & Asri">
+                  </div>
+                  <div class="field">
+                    <label for="hlLink_1">Tautan Saat Diklik</label>
+                    <select id="hlLink_1" class="input">
+                      <option value="rundown">Buka Rundown Acara</option>
+                      <option value="booking">Buka Pilih Kursi Bus</option>
+                      <option value="attendance">Buka Absensi QR</option>
+                      <option value="find">Buka Denah & Cari Peserta</option>
+                      <option value="info">Buka Panduan Informasi</option>
+                      <option value="community">Buka Galeri Acara</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="formgrid">
+                  <div class="field">
+                    <label for="hlMetaLeft_1">Detail Kiri (Lokasi / Suasana)</label>
+                    <input id="hlMetaLeft_1" class="input" placeholder="Contoh: Perkebunan Teh">
+                  </div>
+                  <div class="field">
+                    <label for="hlMetaRight_1">Detail Kanan (Jam / Jadwal)</label>
+                    <input id="hlMetaRight_1" class="input" placeholder="Contoh: Pukul 11:30 WIB">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="card hl-admin-card" data-hl-index="2">
+              <div class="cardhead">
+                <div style="display:flex; align-items:center; gap:8px">
+                  <span class="hl-number-badge">3</span>
+                  <div>
+                    <h3 id="hlCardHeading_2">Kartu Highlight #3</h3>
+                    <p style="font-size:11px; margin:0">Kuliner Khas</p>
+                  </div>
+                </div>
+              </div>
+              <div class="cardbody">
+                <div class="hl-media-section">
+                  <div class="hl-preview-frame">
+                    <img id="hlPreview_2" src="" alt="Pratinjau Highlight 3">
+                    <span class="hl-preview-badge" id="hlBadgePreview_2">Menu Spesial</span>
+                  </div>
+                  <div class="hl-upload-controls">
+                    <input type="file" id="hlFileInput_2" accept="image/*" class="hl-hidden-file">
+                    <button type="button" class="btn ghost hl-file-btn" onclick="document.getElementById('hlFileInput_2').click()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                      <span>Upload Foto Baru</span>
+                    </button>
+                    <input type="url" id="hlUrl_2" class="input" style="font-size:11px" placeholder="Atau paste URL foto web…">
+                  </div>
+                </div>
+
+                <div class="formgrid" style="margin-top:14px">
+                  <div class="field">
+                    <label for="hlTitle_2">Judul Destinasi / Acara *</label>
+                    <input id="hlTitle_2" class="input" placeholder="Contoh: Makan Siang Bersama">
+                  </div>
+                  <div class="field">
+                    <label for="hlCategory_2">Kategori Subtitle</label>
+                    <input id="hlCategory_2" class="input" placeholder="Contoh: Kuliner Khas Sunda">
+                  </div>
+                </div>
+
+                <div class="formgrid">
+                  <div class="field">
+                    <label for="hlBadge_2">Label Badge</label>
+                    <input id="hlBadge_2" class="input" placeholder="Contoh: Menu Spesial">
+                  </div>
+                  <div class="field">
+                    <label for="hlLink_2">Tautan Saat Diklik</label>
+                    <select id="hlLink_2" class="input">
+                      <option value="rundown">Buka Rundown Acara</option>
+                      <option value="booking">Buka Pilih Kursi Bus</option>
+                      <option value="attendance">Buka Absensi QR</option>
+                      <option value="find">Buka Denah & Cari Peserta</option>
+                      <option value="info">Buka Panduan Informasi</option>
+                      <option value="community">Buka Galeri Acara</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="formgrid">
+                  <div class="field">
+                    <label for="hlMetaLeft_2">Detail Kiri (Lokasi / Suasana)</label>
+                    <input id="hlMetaLeft_2" class="input" placeholder="Contoh: Restoran Lokal">
+                  </div>
+                  <div class="field">
+                    <label for="hlMetaRight_2">Detail Kanan (Jam / Jadwal)</label>
+                    <input id="hlMetaRight_2" class="input" placeholder="Contoh: Pukul 12:30 WIB">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="card hl-admin-card" data-hl-index="3">
+              <div class="cardhead">
+                <div style="display:flex; align-items:center; gap:8px">
+                  <span class="hl-number-badge">4</span>
+                  <div>
+                    <h3 id="hlCardHeading_3">Kartu Highlight #4</h3>
+                    <p style="font-size:11px; margin:0">Aktivitas & Doorprize</p>
+                  </div>
+                </div>
+              </div>
+              <div class="cardbody">
+                <div class="hl-media-section">
+                  <div class="hl-preview-frame">
+                    <img id="hlPreview_3" src="" alt="Pratinjau Highlight 4">
+                    <span class="hl-preview-badge" id="hlBadgePreview_3">Hadiah Menarik</span>
+                  </div>
+                  <div class="hl-upload-controls">
+                    <input type="file" id="hlFileInput_3" accept="image/*" class="hl-hidden-file">
+                    <button type="button" class="btn ghost hl-file-btn" onclick="document.getElementById('hlFileInput_3').click()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                      <span>Upload Foto Baru</span>
+                    </button>
+                    <input type="url" id="hlUrl_3" class="input" style="font-size:11px" placeholder="Atau paste URL foto web…">
+                  </div>
+                </div>
+
+                <div class="formgrid" style="margin-top:14px">
+                  <div class="field">
+                    <label for="hlTitle_3">Judul Destinasi / Acara *</label>
+                    <input id="hlTitle_3" class="input" placeholder="Contoh: Games & Doorprize">
+                  </div>
+                  <div class="field">
+                    <label for="hlCategory_3">Kategori Subtitle</label>
+                    <input id="hlCategory_3" class="input" placeholder="Contoh: Aktivitas Seru">
+                  </div>
+                </div>
+
+                <div class="formgrid">
+                  <div class="field">
+                    <label for="hlBadge_3">Label Badge</label>
+                    <input id="hlBadge_3" class="input" placeholder="Contoh: Hadiah Menarik">
+                  </div>
+                  <div class="field">
+                    <label for="hlLink_3">Tautan Saat Diklik</label>
+                    <select id="hlLink_3" class="input">
+                      <option value="rundown">Buka Rundown Acara</option>
+                      <option value="booking">Buka Pilih Kursi Bus</option>
+                      <option value="attendance">Buka Absensi QR</option>
+                      <option value="find">Buka Denah & Cari Peserta</option>
+                      <option value="info">Buka Panduan Informasi</option>
+                      <option value="community">Buka Galeri Acara</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="formgrid">
+                  <div class="field">
+                    <label for="hlMetaLeft_3">Detail Kiri (Lokasi / Suasana)</label>
+                    <input id="hlMetaLeft_3" class="input" placeholder="Contoh: Area Terbuka">
+                  </div>
+                  <div class="field">
+                    <label for="hlMetaRight_3">Detail Kanan (Jam / Jadwal)</label>
+                    <input id="hlMetaRight_3" class="input" placeholder="Contoh: Pukul 14:00 WIB">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             SUBPAGE 7: LAPORAN & BACKUP DATA
+             ================================================================== -->
+        <section class="adminpage hidden" id="page-reports">
+          <div class="pagehead">
+            <div>
+              <h1>Laporan Acara & Backup Database</h1>
+              <p>Unduh salinan data kursi, riwayat absensi, dan backup penuh database Supabase.</p>
+            </div>
+          </div>
+
+          <div class="twocol">
+            <!-- CSV & Print Card -->
+            <div class="card">
+              <div class="cardhead">
+                <div>
+                  <h3>Ekspor Laporan & Cetak</h3>
+                  <p>Format CSV kompatibel Microsoft Excel & Google Sheets</p>
+                </div>
+              </div>
+              <div class="cardbody actions">
+                <button class="btn primary" id="exportCsv" type="button" style="width:100%; justify-content:center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                  <span>Unduh Data Kursi (CSV)</span>
+                </button>
+                <button class="btn green" id="exportAttendance" type="button" style="width:100%; justify-content:center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                  <span>Unduh Data Absensi (CSV)</span>
+                </button>
+                <button class="btn ghost" id="printReport" type="button" style="width:100%; justify-content:center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+                  <span>Cetak Laporan (Print)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Full JSON Backup Card -->
+            <div class="card">
+              <div class="cardhead">
+                <div>
+                  <h3>Backup Penuh Database (JSON)</h3>
+                  <p>Salinan lengkap data kursi, absensi, rundown & pengaturan</p>
+                </div>
+              </div>
+              <div class="cardbody">
+                <button class="btn primary" id="createBackupBtn" type="button" style="width:100%; justify-content:center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                  <span>Unduh Backup Sekarang (.JSON)</span>
+                </button>
+                <p id="backupCreateMsg" class="status" style="margin-top:10px">
+                  File backup tersimpan aman langsung ke memori komputer/HP panitia.
+                </p>
+                <div class="infobox" style="margin-top:12px; font-size:11px">
+                  <b>Catatan Keamanan:</b> File backup berisi nomor kontak dan data peserta rombongan. Harap simpan file di tempat yang aman.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             SUBPAGE 10: PENGATURAN ACARA
+             ================================================================== -->
+        <section class="adminpage hidden" id="page-settings">
+          <div class="pagehead">
+            <div>
+              <h1>Pengaturan Acara Family Gathering</h1>
+              <p>Perbarui informasi acara yang tampil di seluruh portal publik.</p>
+            </div>
+          </div>
+
+          <div class="card" style="max-width:800px">
+            <div class="cardhead">
+              <h3>Form Informasi Acara</h3>
+            </div>
+            <div class="cardbody">
+              <form id="eventSettingsForm">
+                <div class="formgrid">
+                  <div class="field">
+                    <label for="eventNameInput">Nama Acara *</label>
+                    <input id="eventNameInput" required value="Family Gathering Kampoeng Waringin">
+                  </div>
+                  <div class="field">
+                    <label for="eventDateInput">Tanggal Acara *</label>
+                    <input id="eventDateInput" type="date" required value="2026-11-01">
+                  </div>
+                  <div class="field">
+                    <label for="eventLocationInput">Tujuan / Lokasi *</label>
+                    <input id="eventLocationInput" required value="Kawah Putih, Bandung, Jawa Barat">
+                  </div>
+                  <div class="field">
+                    <label for="eventGatherInput">Jam Kumpul *</label>
+                    <input id="eventGatherInput" required value="06.00 WIB">
+                  </div>
+                  <div class="field" style="grid-column:1/-1">
+                    <label for="eventMeetingInput">Titik Kumpul *</label>
+                    <input id="eventMeetingInput" required value="Kantor Kampoeng Waringin">
+                  </div>
+                  <div class="field" style="grid-column:1/-1">
+                    <label for="eventDescriptionInput">Deskripsi Acara</label>
+                    <textarea id="eventDescriptionInput" rows="3">Wisata satu hari bersama keluarga besar Kampoeng Waringin menuju Kawah Putih.</textarea>
+                  </div>
+                </div>
+                <div class="actions" style="margin-top:14px">
+                  <button class="btn primary" type="submit">Simpan Pengaturan Acara</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

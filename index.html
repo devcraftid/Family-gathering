@@ -1311,9 +1311,9 @@ async function submitBookingForm(e,mode){
  const currentSeat=isEditing?Number(adminBookingEditSeat):null,occupant=record(seat);if(occupant?.nama&&Number(seat)!==currentSeat){msg.textContent='Maaf, kursi '+seat+' sudah dipesan. Silakan pilih kursi lain.';await loadData();return}
  btn.disabled=true;btn.textContent=isEditing?'Menyimpan perubahan…':'Menyimpan…';msg.textContent='Menyimpan booking ke database…';
  try{
-  if(isEditing&&seat===currentSeat){const {error}=await db.from('kursi_bus').update({nama,no_hp:phone||null,updated_at:new Date().toISOString()}).eq('nomor_kursi',currentSeat);if(error)throw error;}
+  if(isEditing&&seat===currentSeat){const {error}=await db.from('kursi_bus').update({nama:name,no_hp:phone||null,updated_at:new Date().toISOString()}).eq('nomor_kursi',currentSeat);if(error)throw error;}
   else {
-   let query=db.from('kursi_bus').update({nama,no_hp:phone||null,updated_at:new Date().toISOString()}).eq('nomor_kursi',seat).is('nama',null).select('nomor_kursi,nama,no_hp');const {data:updated,error}=await query;if(error)throw error;if(!updated||updated.length===0){await loadData();msg.textContent='Kursi baru saja dipesan orang lain. Pilih kursi lain.';return}
+   let query=db.from('kursi_bus').update({nama:name,no_hp:phone||null,updated_at:new Date().toISOString()}).eq('nomor_kursi',seat).is('nama',null).select('nomor_kursi,nama,no_hp');const {data:updated,error}=await query;if(error)throw error;if(!updated||updated.length===0){await loadData();msg.textContent='Kursi baru saja dipesan orang lain. Pilih kursi lain.';return}
    if(isEditing&&currentSeat!==null){const {error:clearError}=await db.from('kursi_bus').update({nama:null,no_hp:null,updated_at:new Date().toISOString()}).eq('nomor_kursi',currentSeat);if(clearError){await loadData();throw new Error('Kursi baru berhasil diperbarui, tetapi kursi lama gagal dikosongkan. Hubungi admin: '+clearError.message)}}
   }
   msg.textContent=(isEditing?'Perubahan booking berhasil disimpan! ':'Booking berhasil! ')+'Kursi '+seat+' atas nama '+name+'.';if($('publicBookingSummary')&&isPublic)$('publicBookingSummary').textContent='Booking tersimpan: '+name+' · Kursi '+seat;

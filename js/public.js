@@ -15,7 +15,7 @@ let publicEventSettings = {
   event_date: '2026-11-01',
   destination: 'Kawah Putih, Bandung, Jawa Barat',
   gather_time: '06.00 WIB',
-  meeting_point: 'Kantor Kampoeng Waringin',
+  meeting_point: 'Balai Warga Kampoeng Waringin',
   description: 'Wisata satu hari bersama keluarga besar Kampoeng Waringin menuju Kawah Putih.'
 };
 let publicRundownItems = [];
@@ -110,7 +110,7 @@ function applyPublicEventSettings() {
   const dateFormatted = formatEventDate(publicEventSettings.event_date);
   const loc = stripCiwidey(publicEventSettings.destination || 'Kawah Putih, Bandung, Jawa Barat');
   const gather = publicEventSettings.gather_time || '06.00 WIB';
-  const meeting = publicEventSettings.meeting_point || 'Kantor Kampoeng Waringin';
+  const meeting = publicEventSettings.meeting_point || 'Balai Warga Kampoeng Waringin';
   const name = publicEventSettings.event_name || 'Family Gathering Kampoeng Waringin';
 
   // Hero & Floating Travezia Widget elements
@@ -152,7 +152,7 @@ function applyPublicEventSettings() {
 // --------------------------------------------------------------------------
 const DEFAULT_HIGHLIGHTS = [
   {
-    image: 'img/banner-kawah-putih.jpg',
+    image: 'img/highlight-dest.jpg',
     badge: 'Top Rated',
     badgeClass: 'badge-top',
     title: 'Kawah Putih, Bandung',
@@ -185,8 +185,8 @@ const DEFAULT_HIGHLIGHTS = [
     image: 'img/highlight-date.jpg',
     badge: 'Keberangkatan',
     badgeClass: 'badge-seller',
-    title: 'Kantor KP Waringin',
-    category: 'Titik Kumpul · Pkl 06.00 WIB',
+    title: 'Balai Warga KP Waringin',
+    category: 'Titik Kumpul Warga · Pkl 06.00 WIB',
     metaLeft: '1 November 2026',
     metaRight: 'Lihat Rundown ↗',
     link: 'rundown'
@@ -311,7 +311,21 @@ function showPublicSeatDetails(n) {
     infoEl.innerHTML = `
       <div style="font-size:13px; font-weight:800; color:#123e31">Kursi Nomor ${n}</div>
       <div style="font-size:12px; margin-top:4px">Status: <strong style="color:${r?.nama ? '#16a34a' : '#dc2626'}">${r?.nama ? 'TERISI' : 'TERSEDIA (KOSONG)'}</strong></div>
-      ${r?.nama ? `<div style="font-size:11px; color:#50655c; margin-top:2px">Nama Peserta: <b>${esc(r.nama)}</b></div>` : ''}
+      ${r?.nama ? `
+        <div style="font-size:11.5px; color:#50655c; margin-top:3px">Nama Peserta: <b>${esc(r.nama)}</b></div>
+        <div class="wa-action-row" style="margin-top:10px">
+          <button type="button" class="btn ghost btn-wa-copy" onclick="copySeatWhatsApp(${n}, '${encodeURIComponent(r.nama)}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <span>Salin ke WA</span>
+          </button>
+          <button type="button" class="btn primary btn-wa-share" onclick="shareSeatWhatsApp(${n}, '${encodeURIComponent(r.nama)}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <span>Buka WA</span>
+          </button>
+        </div>
+      ` : `
+        <div style="font-size:11px; color:#64748b; margin-top:4px">Kursi ini masih kosong dan dapat dipilih melalui menu Booking Kursi.</div>
+      `}
     `;
   }
 }
@@ -465,15 +479,26 @@ function renderPublicAttendanceList() {
     return;
   }
 
-  body.innerHTML = rows.map((r, i) => `
-    <tr>
-      <td>${i + 1}</td>
-      <td><span class="connection-ok">${esc(r.session_name || 'Sesi Acara')}</span></td>
-      <td><b>${esc(r.nama || '—')}</b></td>
-      <td>Kursi ${esc(r.nomor_kursi || '—')}</td>
-      <td>${r.waktu_absen ? new Date(r.waktu_absen).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : '—'}</td>
-    </tr>
-  `).join('');
+  body.innerHTML = rows.map((r, i) => {
+    const timeFormatted = r.waktu_absen ? new Date(r.waktu_absen).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : '—';
+    const sessTitle = r.session_name || 'Sesi Acara';
+    return `
+      <tr>
+        <td style="padding:10px 12px; font-weight:700; color:#64748b">${i + 1}</td>
+        <td style="padding:10px 12px"><span class="attendance-tag">${esc(sessTitle)}</span></td>
+        <td style="padding:10px 12px; font-weight:800; color:#0f172a">${esc(r.nama || '—')}</td>
+        <td style="padding:10px 12px"><span class="seat-badge">Kursi ${esc(r.nomor_kursi || '—')}</span></td>
+        <td style="padding:10px 12px; font-size:12px; color:#64748b">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:6px">
+            <span>${timeFormatted}</span>
+            <button type="button" class="btn-wa-icon" title="Salin Bukti Hadir ke WA" onclick="copyAttendanceWhatsApp('${encodeURIComponent(r.nama)}', ${r.nomor_kursi}, '${encodeURIComponent(sessTitle)}', '${timeFormatted}')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 async function submitPublicAttendance(e) {
@@ -531,7 +556,24 @@ async function submitPublicAttendance(e) {
     const { error } = await db.from('absensi').insert(payload);
     if (error) throw error;
 
-    msgEl.innerHTML = `<span style="color:#16a34a; font-weight:750">✓ Absensi Berhasil dicatat untuk ${esc(person.nama)} (Kursi ${seat}). Terima kasih!</span>`;
+    const sessName = activeAttendanceSession?.name || 'Sesi Acara';
+    const timeNow = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+    msgEl.innerHTML = `
+      <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:12px 14px; margin-top:8px">
+        <div style="color:#065f46; font-weight:800; font-size:13.5px">✓ Absensi Berhasil Tercatat!</div>
+        <div style="color:#047857; font-size:12px; margin-top:2px">Terima kasih <b>${esc(person.nama)}</b> (Kursi ${seat}) telah hadir untuk sesi <i>${esc(sessName)}</i>.</div>
+        <div class="wa-action-row" style="margin-top:10px">
+          <button type="button" class="btn ghost btn-wa-copy" onclick="copyAttendanceWhatsApp('${encodeURIComponent(person.nama)}', ${seat}, '${encodeURIComponent(sessName)}', '${timeNow}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <span>Salin Bukti Hadir ke WA</span>
+          </button>
+          <button type="button" class="btn primary btn-wa-share" onclick="shareAttendanceWhatsApp('${encodeURIComponent(person.nama)}', ${seat}, '${encodeURIComponent(sessName)}', '${timeNow}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <span>Kirim ke WhatsApp</span>
+          </button>
+        </div>
+      </div>
+    `;
     toast(`Absensi berhasil: ${person.nama}`);
     $('publicAttendForm').reset();
     await loadPublicAttendance();
@@ -575,6 +617,18 @@ function publicSearch() {
       <b>${esc(r.nama || 'Kosong')}</b>
       <div class="status" style="font-size:12px; margin-top:2px">Bus 1 · Kursi <strong>${r.nomor_kursi}</strong></div>
       <span class="status" style="color:${r.nama ? '#16a34a' : '#dc2626'}">${r.nama ? 'Kursi sudah terisi' : 'Kursi kosong'}</span>
+      ${r.nama ? `
+        <div class="wa-action-row" style="margin-top:8px">
+          <button type="button" class="btn ghost btn-wa-copy" onclick="copySeatWhatsApp(${r.nomor_kursi}, '${encodeURIComponent(r.nama)}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <span>Salin ke WA</span>
+          </button>
+          <button type="button" class="btn primary btn-wa-share" onclick="shareSeatWhatsApp(${r.nomor_kursi}, '${encodeURIComponent(r.nama)}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <span>Kirim WA</span>
+          </button>
+        </div>
+      ` : ''}
     </div>
   `).join('');
 }
@@ -625,6 +679,179 @@ function copyRundownWhatsApp() {
     toast('Rundown berhasil disalin untuk WhatsApp!');
   }).catch(() => {
     toast('Gagal menyalin. Silakan salin manual.');
+  });
+}
+
+// --------------------------------------------------------------------------
+// 7b. WhatsApp Copy & Share Helpers (Denah & Cari, Absensi)
+// --------------------------------------------------------------------------
+function copySeatWhatsApp(seatNo, encodedName) {
+  const name = decodeURIComponent(encodedName || '');
+  const r = recordSeat(seatNo);
+  const loc = stripCiwidey(publicEventSettings.destination || 'Kawah Putih, Bandung');
+  const date = formatEventDate(publicEventSettings.event_date);
+  const meeting = publicEventSettings.meeting_point || 'Balai Warga Kampoeng Waringin';
+  const gather = publicEventSettings.gather_time || '06.00 WIB';
+
+  const text = `🚌 *TIKET KURSI BUS ROMBONGAN WARGA*
+*Family Gathering Kampoeng Waringin 2026*
+📍 Destinasi: ${loc}
+📅 Tanggal: ${date}
+⏰ Titik Kumpul: ${meeting} (${gather})
+----------------------------------------
+👤 *Nama Peserta:* ${name || r?.nama || 'Belum Terisi'}
+💺 *Nomor Kursi:* ${seatNo} (Bus Pariwisata HD 59 Seat)
+✅ *Status:* ${r?.nama ? 'Terisi & Terkonfirmasi' : 'Tersedia (Kosong)'}
+----------------------------------------
+_Harap kumpul tepat waktu di titik kumpul rombongan warga._`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    toast(`✓ Info Kursi ${seatNo} berhasil disalin untuk WA!`);
+  }).catch(() => {
+    toast('Gagal menyalin info kursi.');
+  });
+}
+
+function shareSeatWhatsApp(seatNo, encodedName) {
+  const name = decodeURIComponent(encodedName || '');
+  const r = recordSeat(seatNo);
+  const loc = stripCiwidey(publicEventSettings.destination || 'Kawah Putih, Bandung');
+  const date = formatEventDate(publicEventSettings.event_date);
+  const meeting = publicEventSettings.meeting_point || 'Balai Warga Kampoeng Waringin';
+  const gather = publicEventSettings.gather_time || '06.00 WIB';
+
+  const text = `🚌 *TIKET KURSI BUS ROMBONGAN WARGA*
+*Family Gathering Kampoeng Waringin 2026*
+📍 Destinasi: ${loc}
+📅 Tanggal: ${date}
+⏰ Titik Kumpul: ${meeting} (${gather})
+----------------------------------------
+👤 *Nama Peserta:* ${name || r?.nama || 'Belum Terisi'}
+💺 *Nomor Kursi:* ${seatNo} (Bus Pariwisata HD 59 Seat)
+✅ *Status:* ${r?.nama ? 'Terisi & Terkonfirmasi' : 'Tersedia (Kosong)'}
+----------------------------------------
+_Harap kumpul tepat waktu di titik kumpul rombongan warga._`;
+
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+}
+
+function copyAllSeatsWhatsApp() {
+  const loc = stripCiwidey(publicEventSettings.destination || 'Kawah Putih, Bandung');
+  const date = formatEventDate(publicEventSettings.event_date);
+  const meeting = publicEventSettings.meeting_point || 'Balai Warga Kampoeng Waringin';
+  const gather = publicEventSettings.gather_time || '06.00 WIB';
+
+  const occupied = publicData
+    .filter(r => r.nama && Number(r.nomor_kursi) >= 1 && Number(r.nomor_kursi) <= 59)
+    .sort((a, b) => Number(a.nomor_kursi) - Number(b.nomor_kursi));
+
+  let text = `🚌 *DAFTAR KURSI BUS GATHERING WARGA*
+*Family Gathering Kampoeng Waringin 2026*
+📍 Destinasi: ${loc}
+📅 Tanggal: ${date}
+⏰ Titik Kumpul: ${meeting} (${gather})
+💺 *Total Terisi:* ${occupied.length}/59 Kursi (${59 - occupied.length} Tersisa)
+----------------------------------------\n`;
+
+  if (occupied.length) {
+    occupied.forEach(r => {
+      text += `• Kursi ${String(r.nomor_kursi).padStart(2, '0')}: *${r.nama}*\n`;
+    });
+  } else {
+    text += `(Belum ada kursi yang terisi)\n`;
+  }
+
+  text += `----------------------------------------\n_Pilih kursi mandiri melalui website gathering rombongan warga._`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    toast(`✓ Daftar ${occupied.length} kursi berhasil disalin untuk WhatsApp!`);
+  }).catch(() => {
+    toast('Gagal menyalin daftar kursi.');
+  });
+}
+
+function copyAttendanceWhatsApp(encodedName, seatNo, encodedSession, timeStr) {
+  const name = decodeURIComponent(encodedName || '');
+  const sess = decodeURIComponent(encodedSession || 'Sesi Acara');
+  const loc = stripCiwidey(publicEventSettings.destination || 'Kawah Putih, Bandung');
+  const date = formatEventDate(publicEventSettings.event_date);
+
+  const text = `✅ *BUKTI ABSENSI KEHADIRAN WARGA*
+*Family Gathering Kampoeng Waringin 2026*
+📍 Destinasi: ${loc}
+📅 Tanggal: ${date}
+----------------------------------------
+👤 *Nama Peserta:* ${name}
+💺 *Nomor Kursi:* Kursi ${seatNo}
+📋 *Sesi Acara:* ${sess}
+⏱️ *Waktu Hadir:* ${timeStr || '-'}
+----------------------------------------
+_Status: Hadir & Tercatat di Sistem Absensi Panitia Warga_`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    toast(`✓ Bukti kehadiran ${name} berhasil disalin untuk WA!`);
+  }).catch(() => {
+    toast('Gagal menyalin bukti kehadiran.');
+  });
+}
+
+function shareAttendanceWhatsApp(encodedName, seatNo, encodedSession, timeStr) {
+  const name = decodeURIComponent(encodedName || '');
+  const sess = decodeURIComponent(encodedSession || 'Sesi Acara');
+  const loc = stripCiwidey(publicEventSettings.destination || 'Kawah Putih, Bandung');
+  const date = formatEventDate(publicEventSettings.event_date);
+
+  const text = `✅ *BUKTI ABSENSI KEHADIRAN WARGA*
+*Family Gathering Kampoeng Waringin 2026*
+📍 Destinasi: ${loc}
+📅 Tanggal: ${date}
+----------------------------------------
+👤 *Nama Peserta:* ${name}
+💺 *Nomor Kursi:* Kursi ${seatNo}
+📋 *Sesi Acara:* ${sess}
+⏱️ *Waktu Hadir:* ${timeStr || '-'}
+----------------------------------------
+_Status: Hadir & Tercatat di Sistem Absensi Panitia Warga_`;
+
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+}
+
+function copyAttendanceListWhatsApp() {
+  const loc = stripCiwidey(publicEventSettings.destination || 'Kawah Putih, Bandung');
+  const date = formatEventDate(publicEventSettings.event_date);
+  const filterVal = $('publicAttendanceSessionFilter')?.value || 'all';
+
+  let list = publicAttendanceData;
+  let sessionLabel = 'Semua Sesi Acara';
+  if (filterVal !== 'all') {
+    list = publicAttendanceData.filter(r => String(r.session_id) === String(filterVal));
+    const targetSession = publicAttendanceSessions.find(s => String(s.id) === String(filterVal));
+    if (targetSession) sessionLabel = targetSession.name;
+  }
+
+  let text = `📋 *REKAP KEHADIRAN GATHERING WARGA*
+*Family Gathering Kampoeng Waringin 2026*
+📍 Destinasi: ${loc}
+📅 Tanggal: ${date}
+📊 Sesi: ${sessionLabel}
+👥 *Total Hadir:* ${list.length} Peserta
+----------------------------------------\n`;
+
+  if (list.length) {
+    list.forEach((r, idx) => {
+      const timeStr = r.waktu_absen ? new Date(r.waktu_absen).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : '-';
+      text += `${idx + 1}. *${r.nama}* (Kursi ${r.nomor_kursi}) — ${timeStr}\n`;
+    });
+  } else {
+    text += `(Belum ada data kehadiran tercatat)\n`;
+  }
+
+  text += `----------------------------------------\n_Update otomatis sistem Panitia Gathering Kampoeng Waringin_`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    toast(`✓ Rekap ${list.length} kehadiran berhasil disalin untuk WhatsApp!`);
+  }).catch(() => {
+    toast('Gagal menyalin rekap.');
   });
 }
 
@@ -708,8 +935,10 @@ document.addEventListener('DOMContentLoaded', () => {
   $('publicSearchBtn')?.addEventListener('click', publicSearch);
   $('publicSearch')?.addEventListener('input', publicSearch);
 
-  // Copy Rundown
+  // Copy Rundown, Seats, and Attendance
   $('copyPublicRundownBtn')?.addEventListener('click', copyRundownWhatsApp);
+  $('copyAllSeatsWaBtn')?.addEventListener('click', copyAllSeatsWhatsApp);
+  $('copyAttendanceListWaBtn')?.addEventListener('click', copyAttendanceListWhatsApp);
 
   // Hubungi Admin WhatsApp Button Handlers
   const openCsWhatsApp = () => {

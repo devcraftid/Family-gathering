@@ -88,32 +88,21 @@
       <!-- Header Action Buttons -->
       <div style="display:flex; align-items:center; gap:8px">
         <button type="button" class="btn ghost header-cs-btn" id="headerCsBtn" title="Hubungi Admin Panitia via WhatsApp" aria-label="Hubungi Admin">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 100 100" fill="currentColor" style="color:#059669">
-            <defs>
-              <mask id="headerCsMask">
-                <rect width="100" height="100" fill="white"/>
-                <path d="M 72 43 C 72 54 66 58 54 58 L 50 58 C 46 58 44 54 44 51 C 44 47 46 44 50 44 L 56 44 C 63 44 67 40 67 36" fill="none" stroke="black" stroke-width="5" stroke-linecap="round"/>
-                <rect x="47" y="47" width="14" height="10" rx="5" fill="black"/>
-                <path d="M 32 55 C 32 66 40 70 50 70 C 60 70 68 66 68 55 Z" fill="black"/>
-              </mask>
-            </defs>
-            <path d="M 28 38 C 28 20 38 9 50 9 C 62 9 72 20 72 38" fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round"/>
-            <rect x="21" y="29" width="9" height="17" rx="4.5"/>
-            <rect x="70" y="29" width="9" height="17" rx="4.5"/>
-            <circle cx="50" cy="35" r="19" mask="url(#headerCsMask)"/>
-            <path d="M 72 43 C 72 52 66 55 56 55 L 53 55" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-            <rect x="49" y="52" width="9" height="6" rx="3"/>
-            <path d="M 11 82 C 11 63 25 54 37 52.5 C 41 60 45 63 50 63 C 55 63 59 60 63 52.5 C 75 54 89 63 89 82 Z"/>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="header-btn-icon">
+            <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+            <path d="M12 19h4a2 2 0 0 0 2-2v-1"/>
           </svg>
           <span>Hubungi Admin</span>
         </button>
 
         <!-- Admin Portal Link Button -->
-        <a href="admin.html" class="public-admin-btn" id="publicAdminLink" aria-label="Buka Portal Admin">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 100 100" fill="currentColor">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M 50 11 C 28.5 11 11 28.5 11 50 C 11 71.5 28.5 89 50 89 C 71.5 89 89 71.5 89 50 C 89 28.5 71.5 11 50 11 Z M 50 25 C 57.7 25 64 31.3 64 39 C 64 46.7 57.7 53 50 53 C 42.3 53 36 46.7 36 39 C 36 31.3 42.3 25 50 25 Z M 23.3 74.2 C 29.5 63.8 38.8 59 50 59 C 61.2 59 70.5 63.8 76.7 74.2 C 69.8 82 59.9 86.5 50 86.5 C 40.1 86.5 30.2 82 23.3 74.2 Z"/>
+        <a href="admin.html" class="public-admin-btn" id="publicAdminLink" aria-label="Buka Profil Admin" title="Profil Admin">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="header-btn-icon">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
           </svg>
-          <span>Login Admin</span>
+          <span>Profil</span>
         </a>
       </div>
     </header>
@@ -211,7 +200,7 @@
         <div class="travel-widget-strip">
           <div class="travel-strip-item">
             <small>Keberangkatan</small>
-            <b id="travelStripFrom">Kantor KP Waringin</b>
+            <b id="travelStripFrom">Balai Warga KP Waringin</b>
             <span>Titik Kumpul Registrasi</span>
           </div>
 
@@ -301,7 +290,7 @@
           <!-- Card 1 -->
           <article class="popular-card" onclick="showPublicPage('info')">
             <div class="popular-card-image">
-              <img src="img/banner-kawah-putih.jpg" alt="Kawah Putih, Bandung">
+              <img src="img/highlight-dest.jpg" alt="Kawah Putih, Bandung">
               <span class="popular-badge badge-top">Top Rated</span>
               <div class="popular-card-gradient"></div>
               <div class="popular-card-overlay">
@@ -356,8 +345,8 @@
               <span class="popular-badge badge-seller">Keberangkatan</span>
               <div class="popular-card-gradient"></div>
               <div class="popular-card-overlay">
-                <h3>Kantor KP Waringin</h3>
-                <p>Titik Kumpul · Pkl 06.00 WIB</p>
+                <h3>Balai Warga KP Waringin</h3>
+                <p>Titik Kumpul Warga · Pkl 06.00 WIB</p>
                 <div class="popular-card-meta">
                   <b>1 November 2026</b>
                   <span>Lihat Rundown ↗</span>
@@ -481,6 +470,10 @@
             <button class="btn primary" id="publicSearchBtn" type="button">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
               <span>Cari Sekarang</span>
+            </button>
+            <button class="btn ghost" id="copyAllSeatsWaBtn" type="button" style="margin-top:10px; font-size:12px; padding:8px 12px; gap:6px; width:100%; justify-content:center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>💬 Salin Semua Kursi Terisi ke WA</span>
             </button>
             <div id="publicSearchResults" style="margin-top:16px"></div>
           </div>
@@ -679,9 +672,15 @@
                 <h3>Riwayat Kehadiran Peserta</h3>
                 <p id="publicAttendanceCount" class="status">Memuat data absensi…</p>
               </div>
-              <select id="publicAttendanceSessionFilter" class="input" style="max-width:200px" aria-label="Filter Sesi Absensi">
-                <option value="all">Semua Sesi</option>
-              </select>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap">
+                <button type="button" class="btn primary" id="copyAttendanceListWaBtn" style="font-size:12px; padding:7px 12px; gap:6px; display:inline-flex; align-items:center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  <span>💬 Salin Rekap Hadir ke WA</span>
+                </button>
+                <select id="publicAttendanceSessionFilter" class="input" style="max-width:180px" aria-label="Filter Sesi Absensi">
+                  <option value="all">Semua Sesi</option>
+                </select>
+              </div>
             </div>
 
             <div class="tablewrap" style="margin-top:10px">
@@ -889,7 +888,7 @@
             </div>
             <div class="travel-strip-item">
               <small>Titik Kumpul Bus</small>
-              <b id="publicInfoMeeting">Kantor Kampoeng Waringin</b>
+              <b id="publicInfoMeeting">Balai Warga Kampoeng Waringin</b>
               <span>Registrasi & Naik Bus</span>
             </div>
           </div>
@@ -1064,8 +1063,8 @@
                 </div>
               </div>
               <div class="infobox">
-                <b>Informasi Kantor</b>
-                <div style="font-size:12px; margin-top:3px; color:#475569">Kantor Kampoeng Waringin · Layanan Gathering 2026</div>
+                <b>Sekretariat Panitia Warga</b>
+                <div style="font-size:12px; margin-top:3px; color:#475569">Posko Warga Kampoeng Waringin · Layanan Gathering 2026</div>
               </div>
             </div>
           </div>
@@ -1092,7 +1091,7 @@
             </span>
             <div>
               <b>Berangkat Tepat Waktu</b>
-              <small>06:00 WIB di Kantor KP Waringin</small>
+              <small>06:00 WIB di Balai Warga KP Waringin</small>
             </div>
           </div>
           <div class="footer-badge-item">
@@ -1179,7 +1178,7 @@
           </div>
           <div class="footer-info-item">
             <small>Titik Kumpul Registrasi</small>
-            <b id="footerMeeting">Kantor Kampoeng Waringin</b>
+            <b id="footerMeeting">Balai Warga Kampoeng Waringin</b>
           </div>
           <div class="footer-info-item">
             <small>Waktu Berangkat</small>

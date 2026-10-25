@@ -49,7 +49,7 @@ const PUBLIC_MENUS = [
   {
     id: 'info',
     title: 'Panduan Informasi',
-    subtitle: 'Peta rute Kawah Putih, titik kumpul kantor & panduan rombongan',
+    subtitle: 'Peta rute Kawah Putih, titik kumpul warga & panduan rombongan',
     icon: 'info',
     color: '#4f46e5',
     bg: '#eef2ff'

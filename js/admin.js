@@ -26,7 +26,7 @@ let adminEventSettings = {
   event_date: '2026-11-01',
   destination: 'Kawah Putih, Bandung, Jawa Barat',
   gather_time: '06.00 WIB',
-  meeting_point: 'Kantor Kampoeng Waringin',
+  meeting_point: 'Balai Warga Kampoeng Waringin',
   description: 'Wisata satu hari bersama keluarga besar Kampoeng Waringin.'
 };
 
@@ -842,42 +842,42 @@ function exportAdminAttendance() {
 const DEFAULT_ADMIN_HIGHLIGHTS = [
   {
     id: 1,
-    title: 'Kawah Putih Utama',
-    category: 'Destinasi Utama',
-    badge: 'Spot Foto #1',
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
-    metaLeft: 'Danau Belerang',
-    metaRight: 'Pukul 09:30 WIB',
-    link: 'rundown'
+    title: 'Kawah Putih, Bandung',
+    category: 'Wisata Alam · Kawah Vulkanik',
+    badge: 'Top Rated',
+    image: 'img/highlight-dest.jpg',
+    metaLeft: 'Danau Belerang Eksotis',
+    metaRight: 'Bandung, Jawa Barat',
+    link: 'info'
   },
   {
     id: 2,
-    title: 'Kebun Teh Rancabali',
-    category: 'Panorama Alam',
-    badge: 'Sejuk & Asri',
-    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
-    metaLeft: 'Perkebunan Teh',
-    metaRight: 'Pukul 11:30 WIB',
-    link: 'rundown'
+    title: 'Bus Pariwisata HD 59 Seat',
+    category: 'Armada Sewa Khusus · AC Dingin',
+    badge: 'Fasilitas Utama',
+    image: 'img/highlight-bus.jpg',
+    metaLeft: 'Konfigurasi 2–3 Kursi',
+    metaRight: 'Pilih Kursi ↗',
+    link: 'booking'
   },
   {
     id: 3,
-    title: 'Makan Siang Bersama',
-    category: 'Kuliner Khas Sunda',
-    badge: 'Menu Spesial',
-    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
-    metaLeft: 'Restoran Lokal',
-    metaRight: 'Pukul 12:30 WIB',
-    link: 'rundown'
+    title: 'Kebersamaan Rombongan',
+    category: 'Makan Siang · Ramah Tamah',
+    badge: 'Trending',
+    image: 'img/highlight-gather.jpg',
+    metaLeft: 'Doorprize & Games',
+    metaRight: 'Galeri & Ucapan ↗',
+    link: 'community'
   },
   {
     id: 4,
-    title: 'Games & Doorprize',
-    category: 'Aktivitas Seru',
-    badge: 'Hadiah Menarik',
-    image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=800&q=80',
-    metaLeft: 'Area Terbuka',
-    metaRight: 'Pukul 14:00 WIB',
+    title: 'Balai Warga KP Waringin',
+    category: 'Titik Kumpul Warga · Pkl 06.00 WIB',
+    badge: 'Keberangkatan',
+    image: 'img/highlight-date.jpg',
+    metaLeft: '1 November 2026',
+    metaRight: 'Lihat Rundown ↗',
     link: 'rundown'
   }
 ];

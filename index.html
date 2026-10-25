@@ -1,8 +1,9 @@
 <!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kampoeng Waringin | Family Gathering - Kawah Putih</title>
+<meta name="description" content="Informasi Family Gathering Kampoeng Waringin ke Kawah Putih: pengumuman, agenda, galeri, peta, absensi, dan booking kursi.">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -830,7 +831,140 @@ input,select,textarea{max-width:100%;font-size:16px!important} /* avoid mobile b
 }
 @media(prefers-reduced-motion:reduce){#publicView *{scroll-behavior:auto!important;transition:none!important}}
 
-</style></head>
+
+.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}.feature-grid>.card{min-width:0}.feature-grid .cardbody{min-width:0}.feature-gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.feature-gallery-item{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;min-width:0}.feature-gallery-item img{display:block;width:100%;height:140px;object-fit:cover;background:#edf3f6}.feature-gallery-item div{padding:9px;font-size:11px;font-weight:700;overflow-wrap:anywhere}.feature-list-item{padding:10px;border:1px solid #e5ebf2;border-radius:9px;margin:8px 0;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.announcement-public{background:#fff7d6;border:1px solid #f4d66b;color:#604700;padding:13px 15px;border-radius:12px;font-weight:800;margin-bottom:16px;line-height:1.5}.feature-contact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.feature-contact{border:1px solid #dce9e1;background:#f5fbf7;border-radius:10px;padding:12px;overflow-wrap:anywhere}.feature-contact a{display:inline-block;margin:6px 6px 0 0}.feature-grid textarea,.feature-grid input,.feature-grid select{max-width:100%;min-width:0}.feature-grid .table{min-width:360px}
+@media(max-width:850px){.feature-grid{grid-template-columns:1fr}.feature-gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.feature-contact-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.feature-gallery-grid,.feature-contact-grid{grid-template-columns:1fr}.feature-gallery-item img{height:180px}.feature-list-item{align-items:flex-start}.feature-grid .formgrid{grid-template-columns:1fr}.feature-grid .actions{display:flex;flex-wrap:wrap}.feature-grid .btn{max-width:100%;white-space:normal}}
+
+/* Tambahan utilitas publik: kontak cepat, pencarian, peta, FAQ, modal galeri */
+.quick-wa{position:fixed;right:18px;bottom:18px;z-index:1000;display:flex;align-items:center;gap:9px;padding:12px 16px;border:0;border-radius:999px;background:#16a765;color:#fff;font-weight:800;font-size:12px;box-shadow:0 10px 28px #063d2850;cursor:pointer}
+.quick-wa .wa-bubble{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#ffffff25;font-size:15px}
+.community-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin:18px 0}
+.community-panel{min-width:0;border:1px solid #e1eaf4;border-radius:14px;padding:15px;background:#fff}
+.community-panel h3{margin:0 0 10px;font-size:15px;color:#173454}
+.agenda-list{display:grid;gap:8px}.agenda-item{padding:11px 12px;border-radius:10px;background:#f5f9ff;border:1px solid #e2ecf8}.agenda-item b{display:block;font-size:12px}.agenda-item p{font-size:11px;color:#6c7d92;margin:4px 0 0;line-height:1.6}
+.community-search{width:100%;min-height:42px;border:1px solid #d9e4f1;border-radius:9px;padding:10px 12px;margin:0 0 12px}
+.community-map{width:100%;height:260px;border:0;border-radius:12px;background:#edf3f8}.map-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+.faq-list details{border:1px solid #e0e8f2;border-radius:10px;padding:12px;margin:8px 0;background:#fff}.faq-list summary{font-size:12px;font-weight:800;cursor:pointer}.faq-list details p{font-size:11px;line-height:1.7;color:#687b95;margin:9px 0 0}
+.form-embed-frame{width:100%;min-height:360px;border:1px solid #dce6f1;border-radius:12px;background:#f7f9fc}.gallery-lightbox{position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;padding:20px;background:#06172be8}.gallery-lightbox.open{display:flex}.gallery-lightbox img{max-width:min(94vw,1100px);max-height:84vh;object-fit:contain;border-radius:12px;box-shadow:0 20px 60px #0008}.gallery-lightbox button{position:absolute;top:15px;right:18px;border:0;border-radius:50%;width:42px;height:42px;background:#fff;color:#123;font-size:25px}
+@media(max-width:700px){.quick-wa{right:12px;bottom:12px;padding:10px 13px}.community-tools{grid-template-columns:minmax(0,1fr)}.community-panel{padding:12px}.community-map{height:230px}.form-embed-frame{min-height:420px}.landing-nav,.landing-hero,.card{max-width:100%}}
+
+</style><style id="kw-mobile-hero-overlap-fix">
+/* Perbaikan khusus: hero mobile tidak boleh menumpuk tombol, metadata, dan caption */
+@media (max-width: 600px) {
+  #publicView .landing-hero {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background-position: center center !important;
+  }
+  #publicView .landing-content {
+    position: relative !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding: 25px 17px 20px !important;
+    margin: 0 !important;
+    flex: 0 0 auto !important;
+  }
+  #publicView .landing-eyebrow {
+    display: inline-flex !important;
+    max-width: 100% !important;
+    line-height: 1.5 !important;
+    letter-spacing: 1px !important;
+    margin: 0 0 14px !important;
+    white-space: normal !important;
+  }
+  #publicView .landing-content h1 {
+    font-size: clamp(30px, 8.8vw, 40px) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -1px !important;
+    overflow-wrap: break-word !important;
+    margin: 0 0 12px !important;
+  }
+  #publicView .landing-subtitle { margin: 10px 0 6px !important; line-height: 1.4 !important; }
+  #publicView .landing-copy { margin: 0 !important; line-height: 1.6 !important; }
+  #publicView .landing-meta {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 9px !important;
+    margin: 16px 0 0 !important;
+  }
+  #publicView .landing-meta span { min-width: 0 !important; line-height: 1.45 !important; align-items: flex-start !important; overflow-wrap: anywhere !important; }
+  #publicView .landing-actions {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    width: 100% !important;
+    gap: 9px !important;
+    margin: 17px 0 0 !important;
+  }
+  #publicView .landing-actions > *,
+  #publicView .landing-primary,
+  #publicView .landing-secondary {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    justify-content: center !important;
+    white-space: normal !important;
+    text-align: center !important;
+    line-height: 1.35 !important;
+  }
+  #publicView .landing-photo-caption {
+    position: relative !important;
+    inset: auto !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 12px 12px !important;
+    padding: 12px 14px !important;
+    flex: 0 0 auto !important;
+    border-radius: 13px !important;
+    background: rgba(5, 35, 34, .72) !important;
+    overflow-wrap: anywhere !important;
+  }
+  #publicView .landing-photo-caption b { font-size: 16px !important; line-height: 1.25 !important; }
+  #publicView .landing-photo-caption small { line-height: 1.45 !important; }
+}
+@media (max-width: 360px) {
+  #publicView .landing-content { padding: 21px 13px 17px !important; }
+  #publicView .landing-content h1 { font-size: 29px !important; }
+  #publicView .landing-meta span { font-size: 10px !important; }
+  #publicView .landing-photo-caption { margin: 0 9px 9px !important; }
+}
+
+/* Layout safeguards for every public section and admin form on narrow screens. */
+@media (max-width: 720px) {
+  html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+  #publicView { width: 100%; max-width: 100%; padding: 8px !important; }
+  #publicView .landing-nav { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  #publicView .landing-brand { min-width:0; max-width:100%; flex:1 1 180px; }
+  #publicView .public-nav { width:100%; max-width:100%; display:flex; flex-wrap:nowrap; gap:6px; overflow-x:auto; overscroll-behavior-x:contain; padding:4px 1px 8px; scrollbar-width:thin; }
+  #publicView .public-nav-btn { flex:0 0 auto; white-space:nowrap; }
+  #publicView .landing-nav-cta { flex:1 1 100%; width:100%; }
+  #publicView .landing-hero, #publicView .card, #publicView .public-view-section { min-width:0; max-width:100%; }
+  #publicView .landing-content, #publicView .cardbody, #publicView .cardhead { min-width:0; overflow-wrap:anywhere; }
+  #publicView .landing-actions, #publicView .actions { display:flex; flex-wrap:wrap; gap:8px; }
+  #publicView .landing-actions .btn, #publicView .actions .btn { max-width:100%; }
+  #publicView .twocol, #publicView .formgrid { grid-template-columns:minmax(0,1fr) !important; }
+  #publicView input, #publicView select, #publicView textarea { width:100%; max-width:100%; min-width:0; }
+  #publicView .tablewrap { max-width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  #adminView, #adminView .card, #adminView .cardbody, #adminView .cardhead { min-width:0; max-width:100%; }
+  #adminView .formgrid, #adminView .twocol { grid-template-columns:minmax(0,1fr) !important; }
+  #adminView .tablewrap { max-width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+@media (max-width: 380px) {
+  #publicView .landing-content { padding:20px 13px 18px !important; }
+  #publicView .landing-content h1 { font-size:clamp(26px,8vw,32px) !important; line-height:1.1 !important; }
+  #publicView .landing-meta { display:grid; grid-template-columns:minmax(0,1fr); gap:7px; }
+  #publicView .landing-actions .btn { width:100%; }
+}
+</style>
+</head>
 <body class="initial-public">
 <header class="topbar">
   <div class="brand"><span>Family Gathering<br>Kampoeng Waringin</span></div>
@@ -845,6 +979,7 @@ input,select,textarea{max-width:100%;font-size:16px!important} /* avoid mobile b
   <button class="sidebtn" data-page="attendance"><span class="ico">▣</span>Absensi QR</button>
   <button class="sidebtn" data-page="seats"><span class="ico">▦</span>Denah Kursi</button>
   <button class="sidebtn" data-page="booking"><span class="ico">▣</span>Booking Kursi</button>
+  <button class="sidebtn" data-page="tools"><span class="ico">✦</span>Fitur Tambahan</button>
   <button class="sidebtn" data-page="reports"><span class="ico">▤</span>Laporan</button>
   <button class="sidebtn" data-page="backup"><span class="ico">⬇</span>Backup Data</button>
   <button class="sidebtn" data-page="settings"><span class="ico">⚙</span>Pengaturan</button>
@@ -941,6 +1076,23 @@ input,select,textarea{max-width:100%;font-size:16px!important} /* avoid mobile b
         <div class="card" style="margin-top:18px"><div class="cardhead"><div><h3>Pengaturan Rundown</h3><p>Atur waktu, nama kegiatan, keterangan, dan urutan jadwal yang tampil di halaman publik.</p></div></div><div class="cardbody"><button class="btn primary" type="button" id="openRundownSettings">Buka Pengaturan Rundown</button><p class="status">Data rundown tersimpan di Supabase agar tidak kembali ke awal saat reload.</p></div></div>
       </div></div>
     </section>
+    <section class="adminpage hidden" id="page-tools">
+      <div class="pagehead"><div><h1>Fitur Tambahan Panitia</h1><p>Kelola bus, rombongan, permintaan tukar kursi, checkpoint, pembayaran, kas, pengumuman, galeri, dan kontak darurat.</p></div><button class="btn ghost" id="refreshFeatureData" type="button">Muat Ulang Data</button></div>
+      <div class="feature-grid">
+        <div class="card"><div class="cardhead"><div><h3>Manajemen Bus</h3><p>Tambah armada untuk pengembangan multi-bus.</p></div></div><div class="cardbody"><form id="busForm"><input id="busEditId" type="hidden"><div class="field"><label>Nama bus</label><input id="busName" required placeholder="Bus 2"></div><div class="formgrid"><div class="field"><label>Kapasitas</label><input id="busCapacity" type="number" min="1" max="100" value="59" required></div><div class="field"><label>Nomor / kode</label><input id="busCode" placeholder="KW-02"></div></div><button class="btn primary" type="submit">Simpan Bus</button> <button class="btn ghost" id="busReset" type="button">Reset</button><p class="status" id="busMsg"></p></form><div class="tablewrap"><table class="table"><thead><tr><th>Bus</th><th>Kapasitas</th><th>Aksi</th></tr></thead><tbody id="busRows"><tr><td colspan="3">Memuat…</td></tr></tbody></table></div></div></div>
+        <div class="card"><div class="cardhead"><div><h3>Rombongan / Keluarga</h3><p>Label warna untuk pemetaan keluarga, RT, atau departemen.</p></div></div><div class="cardbody"><form id="groupForm"><input id="groupEditId" type="hidden"><div class="field"><label>Nama rombongan</label><input id="groupName" required placeholder="Keluarga Bapak X"></div><div class="formgrid"><div class="field"><label>Warna</label><input id="groupColor" type="color" value="#0f9d78"></div><div class="field"><label>Keterangan</label><input id="groupNote" placeholder="RT / departemen"></div></div><button class="btn primary" type="submit">Simpan Rombongan</button> <button class="btn ghost" id="groupReset" type="button">Reset</button><p class="status" id="groupMsg"></p></form><div class="tablewrap"><table class="table"><thead><tr><th>Rombongan</th><th>Keterangan</th><th>Aksi</th></tr></thead><tbody id="groupRows"><tr><td colspan="3">Memuat…</td></tr></tbody></table></div></div></div>
+        <div class="card"><div class="cardhead"><div><h3>Permintaan Tukar Kursi</h3><p>Admin dapat menyetujui atau menolak permintaan peserta.</p></div></div><div class="cardbody"><div class="tablewrap"><table class="table"><thead><tr><th>Peserta</th><th>Kursi</th><th>Dengan</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="swapRows"><tr><td colspan="5">Memuat…</td></tr></tbody></table></div></div></div>
+        <div class="card"><div class="cardhead"><div><h3>Checkpoint Kehadiran</h3><p>Tambahkan sesi transit, gerbang wisata, naik bus pulang, dan titik lainnya.</p></div></div><div class="cardbody"><form id="checkpointForm"><div class="field"><label>Nama checkpoint</label><input id="checkpointName" required placeholder="Masuk Gerbang Wisata Kawah Putih"></div><div class="formgrid"><div class="field"><label>Bus</label><select id="checkpointBus"><option value="">Semua bus</option></select></div><div class="field"><label>Waktu (opsional)</label><input id="checkpointTime" type="datetime-local"></div></div><button class="btn primary" type="submit">Tambah Checkpoint</button><p class="status" id="checkpointMsg"></p></form><div class="tablewrap"><table class="table"><thead><tr><th>Checkpoint</th><th>Bus</th><th>Waktu</th><th>Aksi</th></tr></thead><tbody id="checkpointRows"><tr><td colspan="4">Memuat…</td></tr></tbody></table></div></div></div>
+        <div class="card"><div class="cardhead"><div><h3>Verifikasi Bukti Pembayaran</h3><p>Periksa bukti transfer yang diunggah peserta.</p></div></div><div class="cardbody"><div class="tablewrap"><table class="table"><thead><tr><th>Peserta</th><th>Nominal</th><th>Bukti</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="proofRows"><tr><td colspan="5">Memuat…</td></tr></tbody></table></div></div></div>
+        <div class="card"><div class="cardhead"><div><h3>Kas & Pengeluaran</h3><p>Catat pemasukan, donasi, konsumsi, dan sisa anggaran.</p></div></div><div class="cardbody"><form id="cashForm"><div class="formgrid"><div class="field"><label>Jenis</label><select id="cashType"><option value="masuk">Pemasukan</option><option value="keluar">Pengeluaran</option></select></div><div class="field"><label>Nominal (Rp)</label><input id="cashAmount" type="number" min="1" required></div></div><div class="field"><label>Keterangan</label><input id="cashNote" required placeholder="Donasi / konsumsi / transportasi"></div><button class="btn primary" type="submit">Simpan Transaksi</button><p class="status" id="cashMsg"></p></form><div class="infobox"><b>Saldo kas: <span id="cashBalance">Rp0</span></b></div><div class="tablewrap"><table class="table"><thead><tr><th>Tanggal</th><th>Jenis</th><th>Keterangan</th><th>Nominal</th><th>Aksi</th></tr></thead><tbody id="cashRows"><tr><td colspan="5">Memuat…</td></tr></tbody></table></div></div></div>
+        <div class="card"><div class="cardhead"><div><h3>Pengumuman Publik</h3><p>Pengumuman tampil di halaman publik setelah diterbitkan.</p></div></div><div class="cardbody"><form id="announcementForm"><input id="announcementEditId" type="hidden"><div class="field"><label>Isi pengumuman</label><textarea id="announcementText" rows="3" required maxlength="1000" placeholder="Mohon kumpul di parkiran bus pukul 14.00 WIB"></textarea></div><label style="display:flex;gap:8px;align-items:center;margin-bottom:12px"><input id="announcementActive" type="checkbox" checked style="width:auto"> Tampilkan di halaman publik</label><button class="btn primary" type="submit">Terbitkan</button><button class="btn ghost" id="announcementReset" type="button">Reset</button><p class="status" id="announcementMsg"></p></form><div id="announcementRows"></div></div></div>
+        <div class="card"><div class="cardhead"><div><h3>Kontak Darurat</h3><p>Kontak tour leader, driver, dan tim medis yang tampil untuk peserta.</p></div></div><div class="cardbody"><form id="emergencyForm"><input id="emergencyEditId" type="hidden"><div class="formgrid"><div class="field"><label>Nama / peran</label><input id="emergencyName" required placeholder="Tour Leader"></div><div class="field"><label>Nomor telepon</label><input id="emergencyPhone" required placeholder="08xxxxxxxxxx"></div></div><button class="btn primary" type="submit">Simpan Kontak</button><button class="btn ghost" id="emergencyReset" type="button">Reset</button><p class="status" id="emergencyMsg"></p></form><div id="emergencyRows"></div></div></div>
+        <div class="card"><div class="cardhead"><div><h3>Galeri Foto</h3><p>Tambahkan tautan foto WebP/JPG dari Google Drive atau penyimpanan publik. Gunakan WebP terkompresi agar cepat di HP.</p></div></div><div class="cardbody"><form id="galleryForm"><input id="galleryEditId" type="hidden"><div class="field"><label>Judul foto / album</label><input id="galleryTitle" required placeholder="Dokumentasi Kawah Putih"></div><div class="field"><label>URL gambar atau album</label><input id="galleryUrl" type="url" required placeholder="https://..."></div><button class="btn primary" type="submit">Simpan Galeri</button><button class="btn ghost" id="galleryReset" type="button">Reset</button><p class="status" id="galleryMsg"></p></form><div id="galleryRows" class="feature-gallery-grid"></div></div></div>
+        <div class="card"><div class="cardhead"><div><h3>Buku Tamu / Ucapan</h3><p>Moderasi ucapan peserta sebelum ditampilkan di publik.</p></div></div><div class="cardbody"><div id="adminGuestbookRows">Memuat ucapan…</div></div></div>
+        <div class="card"><div class="cardhead"><div><h3>Notifikasi WhatsApp</h3><p>Siapkan antrean tiket / pengingat H-1. Pengiriman perlu Supabase Edge Function dan secret provider.</p></div></div><div class="cardbody"><div class="field"><label>Jenis pesan</label><select id="waQueueType"><option value="reminder_h1">Pengingat H-1</option><option value="ticket">Tiket / konfirmasi pembayaran</option><option value="custom">Pengumuman umum</option></select></div><div class="field"><label>Pesan (opsional untuk pengumuman)</label><textarea id="waQueueMessage" rows="2" maxlength="1000" placeholder="Pesan yang akan dikirim lewat WhatsApp"></textarea></div><div class="actions"><button class="btn primary" id="queueWhatsAppBtn" type="button">Buat Antrean Pesan</button></div><p class="status" id="waQueueMsg">Nomor peserta harus tersedia di data pembayaran. Pesan tidak terkirim hanya dengan membuat antrean.</p><div class="tablewrap"><table class="table"><thead><tr><th>Waktu</th><th>Tujuan</th><th>Jenis</th><th>Status</th></tr></thead><tbody id="waQueueRows"><tr><td colspan="4">Memuat antrean…</td></tr></tbody></table></div></div></div>
+        <div class="card"><div class="cardhead"><div><h3>Cetak Name Tag</h3><p>Siapkan daftar peserta untuk cetak kartu identitas. QR peserta memakai ID/nama; QR absensi bisa dibuat dari menu Absensi.</p></div></div><div class="cardbody"><div class="field"><label>Nama peserta</label><select id="nameTagParticipant"></select></div><button class="btn primary" id="printNameTag" type="button">Cetak Name Tag / PDF</button><p class="status" id="nameTagMsg">Pilih peserta lalu gunakan dialog cetak browser untuk menyimpan sebagai PDF.</p></div></div>
+      </div>
+    </section>
     <section class="adminpage hidden" id="page-rundown">
       <div class="pagehead"><div><h1>Kelola Rundown</h1><p>Tambah, edit, hapus, dan atur urutan jadwal. Draft form otomatis di-checkpoint; setelah Simpan Kegiatan berhasil, perubahan langsung disinkronkan ke halaman publik.</p></div></div>
       <div class="twocol">
@@ -969,7 +1121,9 @@ input,select,textarea{max-width:100%;font-size:16px!important} /* avoid mobile b
         <button type="button" class="public-nav-btn" data-public-page="attendance">Absensi</button>
         <button type="button" class="public-nav-btn" data-public-page="rundown">Rundown</button>
         <button type="button" class="public-nav-btn" data-public-page="booking">Booking Kursi</button>
+        <button type="button" class="public-nav-btn" data-public-page="payment-extra">Bayar / Tukar Kursi</button>
         <button type="button" class="public-nav-btn" data-public-page="info">Informasi</button>
+        <button type="button" class="public-nav-btn" data-public-page="community">Galeri & Ucapan</button>
         <button type="button" class="public-nav-btn public-admin-entry" id="publicAdminLoginBtn">Login Admin</button>
       </nav>
       <button type="button" class="btn primary landing-nav-cta" id="landingBookBtn">Pilih Kursi <span>↗</span></button>
@@ -1033,6 +1187,12 @@ input,select,textarea{max-width:100%;font-size:16px!important} /* avoid mobile b
   <div class="public-view-section hidden" id="publicPage-booking"><div class="public-back-row"><button type="button" class="btn ghost" data-public-back>← Kembali</button></div>
   <div class="card" id="publicBookingSection" style="margin-top:10px"><div class="cardhead"><div><h2>Booking Kursi Bus</h2><p>Masukkan nama dan pilih kursi kosong. Kursi yang sudah dibooking tidak dapat dipilih lagi.</p></div></div><div class="cardbody"><div class="twocol"><form id="publicBookingForm"><div class="field"><label>Nama lengkap *</label><input id="publicBookingName" required maxlength="100" minlength="2" placeholder="Masukkan nama lengkap"></div><div class="field"><label>Nomor kursi kosong *</label><select id="publicBookingSeat" required><option value="">Pilih kursi tersedia…</option></select></div><div class="field"><label>Nomor HP (opsional)</label><input id="publicBookingPhone" maxlength="30" placeholder="08xxxxxxxxxx"></div><button class="btn primary" type="submit" id="publicBookingSubmit">Konfirmasi Booking</button><p id="publicBookingPaymentStatus" class="status" role="status">Masukkan nama peserta yang sudah terdaftar dan lunas untuk membuka pilihan kursi.</p><p id="publicBookingMsg" class="status" role="status"></p></form><div class="infobox"><b>Informasi Booking</b><p class="status">• Pembayaran harus berstatus LUNAS sebelum memilih kursi.<br>• Minta panitia mendaftarkan nama dan mengonfirmasi pembayaran.<br>• Satu kursi hanya untuk satu peserta dan satu nama tidak boleh dipakai dua kali.<br>• Kursi kosong baru dapat dipilih setelah pembayaran terverifikasi.</p><div id="publicBookingSummary" class="status">Belum ada booking yang dikirim.</div></div></div></div></div>
   </div>
+  <div class="public-view-section hidden" id="publicPage-payment-extra">
+    <div class="card" style="max-width:760px;margin:10px auto"><div class="cardhead"><h2>Pembayaran & Tukar Kursi</h2></div><div class="cardbody">
+      <form id="publicProofForm"><h3>Unggah Bukti Transfer</h3><div class="field"><label>Nama peserta *</label><input id="proofName" required maxlength="100"></div><div class="field"><label>Nominal transfer (Rp) *</label><input id="proofAmount" type="number" min="1" required></div><div class="field"><label>Foto / screenshot bukti *</label><input id="proofFile" type="file" accept="image/*,.pdf" required></div><button class="btn primary" type="submit">Kirim Bukti Pembayaran</button><p class="status" id="proofPublicMsg">Status menjadi menunggu verifikasi hingga admin memeriksa bukti.</p></form>
+      <hr style="margin:20px 0;border:0;border-top:1px solid #e5eaf0"><form id="publicSwapForm"><h3>Ajukan Tukar Kursi</h3><div class="field"><label>Nama peserta pemohon *</label><input id="swapRequester" required maxlength="100"></div><div class="formgrid"><div class="field"><label>Kursi saat ini *</label><input id="swapFrom" type="number" min="1" max="59" required></div><div class="field"><label>Nomor kursi yang diinginkan *</label><input id="swapTo" type="number" min="1" max="59" required></div></div><div class="field"><label>Alasan</label><textarea id="swapReason" rows="2" maxlength="500" placeholder="Ingin duduk bersama keluarga"></textarea></div><button class="btn primary" type="submit">Kirim Permintaan Tukar</button><p class="status" id="swapPublicMsg">Permintaan perlu persetujuan admin dan belum mengubah kursi secara otomatis.</p></form>
+    </div></div>
+  </div>
   <div class="public-view-section hidden" id="publicPage-info"><div class="public-back-row"><button type="button" class="btn ghost" data-public-back>← Kembali</button></div>
     <div class="card"><div class="cardhead"><div><h2 id="publicInfoTitle">Informasi Family Gathering</h2><p>Informasi perjalanan privat satu hari khusus rombongan Kampoeng Waringin.</p></div></div>
       <div class="cardbody"><div class="info-grid">
@@ -1068,6 +1228,23 @@ input,select,textarea{max-width:100%;font-size:16px!important} /* avoid mobile b
       </div>
     </div>
   </div>
+  <div class="public-view-section hidden" id="publicPage-community">
+    <div class="public-back-row"><button type="button" class="btn ghost" data-public-back>← Kembali</button></div>
+    <div class="card" style="max-width:1000px;margin:10px auto"><div class="cardhead"><div><h2>Galeri & Buku Tamu Kampoeng Waringin</h2><p>Bagikan kenangan dan tinggalkan kesan untuk peserta lainnya.</p></div></div><div class="cardbody">
+      <div id="publicAnnouncementBanner" class="announcement-public hidden" role="status"></div>
+      <div class="community-tools">
+        <section class="community-panel" aria-labelledby="agendaHeading"><h3 id="agendaHeading">Pengumuman & Agenda</h3><input id="communitySearch" class="community-search" type="search" placeholder="Cari pengumuman atau agenda…" aria-label="Cari pengumuman dan agenda"><div id="communityAgenda" class="agenda-list"><div class="agenda-item"><b>Family Gathering Kampoeng Waringin</b><p>1 November 2026 · Titik kumpul Kantor Kampoeng Waringin · Berangkat 06.00 WIB.</p></div><div class="agenda-item"><b>Tujuan kegiatan</b><p>Wisata bersama ke Kawah Putih. Ikuti arahan panitia dan periksa sesi absensi sebelum naik bus.</p></div></div></section>
+        <section class="community-panel"><h3>Lokasi & Navigasi</h3><iframe class="community-map" title="Peta Kawah Putih" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Kawah%20Putih%2C%20Jawa%20Barat&output=embed"></iframe><div class="map-links"><a class="btn primary" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=Kawah+Putih+Jawa+Barat">Rute ke Kawah Putih ↗</a><a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Kantor+Kampoeng+Waringin">Cari titik kumpul ↗</a></div></section>
+        <section class="community-panel"><h3>Form Aspirasi / Pendaftaran</h3><p class="status">Sematkan Google Form atau Tally milik panitia. Tautan disimpan pada perangkat ini.</p><div class="field"><label>Tautan Google Form / Tally</label><input id="communityFormUrl" type="url" placeholder="https://docs.google.com/forms/..." autocomplete="url"></div><div class="actions"><button class="btn primary" type="button" id="saveCommunityFormUrl">Tampilkan Form</button><button class="btn ghost" type="button" id="clearCommunityFormUrl">Hapus tautan</button></div><p class="status" id="communityFormStatus" role="status"></p><div id="communityFormEmbedWrap" class="hidden" style="margin-top:12px"><iframe id="communityFormEmbed" class="form-embed-frame" title="Form aspirasi atau pendaftaran" loading="lazy" sandbox="allow-forms allow-scripts allow-same-origin allow-popups"></iframe><p class="status">Jika penyedia formulir menolak embed, buka formulir melalui tautan aslinya.</p><a id="communityFormOpen" class="btn ghost" target="_blank" rel="noopener">Buka form di tab baru ↗</a></div></section>
+        <section class="community-panel"><h3>Pertanyaan Umum (FAQ)</h3><div class="faq-list"><details><summary>Kapan acara dilaksanakan?</summary><p>Family Gathering dijadwalkan pada 1 November 2026. Pantau pengumuman panitia untuk perubahan jadwal.</p></details><details><summary>Di mana titik kumpul dan jam berangkat?</summary><p>Titik kumpul di Kantor Kampoeng Waringin. Jadwal keberangkatan 06.00 WIB; datang lebih awal sesuai arahan panitia.</p></details><details><summary>Kapan saya bisa memilih kursi?</summary><p>Pemilihan kursi mengikuti ketentuan pembayaran lunas dan ketersediaan kursi yang ditampilkan di halaman booking.</p></details><details><summary>Bagaimana jika perlu bantuan?</summary><p>Gunakan tombol WhatsApp mengambang untuk mengatur nomor admin pada perangkat, atau pilih kontak darurat yang diterbitkan panitia.</p></details></div></section>
+      </div>
+      <h3>Galeri Dokumentasi</h3><input id="gallerySearch" class="community-search" type="search" placeholder="Cari foto atau album…" aria-label="Cari galeri foto"><div id="publicGalleryGrid" class="feature-gallery-grid"><p class="status">Memuat galeri…</p></div>
+      <div class="twocol" style="margin-top:18px;align-items:start"><div><h3>Ucapan & Kesan</h3><form id="publicGuestbookForm"><div class="field"><label>Nama *</label><input id="guestName" required maxlength="100" placeholder="Nama peserta"></div><div class="field"><label>Rating</label><select id="guestRating"><option value="5">★★★★★ — Sangat berkesan</option><option value="4">★★★★ — Menyenangkan</option><option value="3">★★★ — Baik</option><option value="2">★★ — Cukup</option><option value="1">★ — Perlu ditingkatkan</option></select></div><div class="field"><label>Kesan dan pesan *</label><textarea id="guestMessage" required maxlength="1000" rows="4" placeholder="Ceritakan pengalaman kamu…"></textarea></div><button class="btn primary" type="submit">Kirim Ucapan</button><p class="status" id="guestbookMsg">Ucapan akan tampil setelah dimoderasi panitia.</p></form></div><div><h3>Ucapan Peserta</h3><div id="publicGuestbookRows">Memuat ucapan…</div></div></div>
+      <div style="margin-top:18px"><h3>Kontak Darurat</h3><div id="publicEmergencyRows" class="feature-contact-grid"><p class="status">Memuat kontak panitia…</p></div></div>
+    </div></div>
+  </div>
+<button type="button" class="quick-wa" id="quickWhatsAppBtn" aria-label="Hubungi admin melalui WhatsApp"><span class="wa-bubble" aria-hidden="true">WA</span><span>Hubungi Admin</span></button>
+<div class="gallery-lightbox" id="galleryLightbox" role="dialog" aria-modal="true" aria-label="Pratinjau foto" tabindex="-1"><button type="button" id="closeGalleryLightbox" aria-label="Tutup pratinjau">×</button><img id="galleryLightboxImage" alt="Pratinjau foto galeri"></div>
 <div class="toast" id="toast" role="status"></div>
 <script>
 const SUPABASE_URL='https://igkpoynvmiveyavkcfuz.supabase.co';
@@ -1150,12 +1327,11 @@ async function loadData(){
   setConnectionState(data.length?'connected':'empty',data.length?data.length+' baris kursi dibaca':'Tabel kursi_bus terhubung tetapi belum berisi data');
   return data;
  }catch(err){
-  // Jangan hapus data terakhir yang berhasil dimuat saat koneksi gagal.
-  // Menampilkan kursi sebagai kosong ketika Supabase error bisa menyesatkan admin.
+  data=[];
   renderMaps();updateStats();updateBookingUI();
   setConnectionState('error',err?.message||'Tidak dapat membaca tabel kursi_bus');
   console.error('loadData:',err);
-  return data;
+  return [];
  }
 }
 function isAdmin(){return !!user&&user.app_metadata?.role==='admin'}
@@ -1253,8 +1429,7 @@ function showSeatDetails(n){const r=record(n);$('seatDetails').innerHTML='Nomor 
 function showPublicSeat(n){const r=record(n);$('publicSeatInfo').innerHTML='<b>Kursi '+n+'</b><br>Status: <strong>'+(r?.nama?'Terisi':'Kosong')+'</strong>'+(r?.nama?'<br>Nama: '+esc(r.nama):'');}
 function updateBookingUI(){
  const occupied=data.filter(r=>r.nama&&String(r.nama).trim());
- // Kursi yang dikunci tidak boleh dipilih untuk booking baru.
- const free=Array.from({length:59},(_,i)=>i+1).filter(n=>!record(n)?.nama&&!lockedSeats.has(n));
+ const free=Array.from({length:59},(_,i)=>i+1).filter(n=>!record(n)?.nama);
  if($('bookingTaken'))$('bookingTaken').textContent=occupied.length;
  if($('bookingFree'))$('bookingFree').textContent=free.length;
  [['adminBookingSeat','Pilih kursi kosong…'],['publicBookingSeat','Pilih kursi tersedia…']].forEach(([id,label])=>{
@@ -1277,29 +1452,7 @@ function editPaymentParticipant(id){const row=paymentData.find(r=>String(r.id)==
 function resetPaymentForm(){paymentEditingId=null;$('paymentParticipantForm')?.reset();$('savePaymentParticipant').textContent='Simpan Data Pembayaran';$('cancelPaymentEdit')?.classList.add('hidden');if($('paymentParticipantMsg'))$('paymentParticipantMsg').textContent='';}
 async function savePaymentParticipant(e){e.preventDefault();if(!isAdmin())return;const nama=$('paymentParticipantName').value.trim(),no_hp=$('paymentParticipantPhone').value.trim(),status_pembayaran=$('paymentParticipantStatus').value,msg=$('paymentParticipantMsg'),btn=$('savePaymentParticipant');if(nama.length<2){msg.textContent='Nama minimal 2 karakter.';return;}const duplicate=paymentData.find(r=>(r.nama||'').trim().toLowerCase()===nama.toLowerCase()&&String(r.id)!==String(paymentEditingId));if(duplicate){msg.textContent='Nama sudah digunakan pada data pembayaran lain.';return;}const original=paymentEditingId!==null?paymentData.find(r=>String(r.id)===String(paymentEditingId)):null;const oldBooking=original?data.find(r=>r.nama&&(r.nama||'').trim().toLowerCase()===String(original.nama||'').trim().toLowerCase()):null;const duplicateBooking=data.find(r=>r.nama&&(r.nama||'').trim().toLowerCase()===nama.toLowerCase()&&(!oldBooking||Number(r.nomor_kursi)!==Number(oldBooking.nomor_kursi)));if(duplicateBooking){msg.textContent='Nama sudah dipakai pada kursi '+duplicateBooking.nomor_kursi+'.';return;}if(oldBooking&&status_pembayaran!=='lunas'&&!confirm('Peserta ini sudah memiliki kursi '+oldBooking.nomor_kursi+'. Jika status diubah menjadi BELUM LUNAS, booking akan dihapus dan kursi dikosongkan. Lanjutkan?'))return;btn.disabled=true;try{if(paymentEditingId!==null){const {error}=await db.from('participant_payments').update({nama,no_hp:no_hp||null,status_pembayaran,updated_at:new Date().toISOString()}).eq('id',paymentEditingId);if(error)throw error;if(oldBooking){if(status_pembayaran!=='lunas'){const {error:seatError}=await db.from('kursi_bus').update({nama:null,no_hp:null,updated_at:new Date().toISOString()}).eq('nomor_kursi',oldBooking.nomor_kursi);if(seatError)throw new Error('Status pembayaran berubah tetapi kursi gagal dikosongkan: '+seatError.message);}else if((original.nama||'').trim().toLowerCase()!==nama.toLowerCase()||String(original.no_hp||'')!==String(no_hp||'')){const {error:seatError}=await db.from('kursi_bus').update({nama,no_hp:no_hp||null,updated_at:new Date().toISOString()}).eq('nomor_kursi',oldBooking.nomor_kursi);if(seatError)throw new Error('Pembayaran tersimpan, tetapi data booking gagal disinkronkan: '+seatError.message);}}msg.textContent='Data pembayaran peserta diperbarui.';}else{const {error}=await db.from('participant_payments').insert({nama,no_hp:no_hp||null,status_pembayaran});if(error)throw error;msg.textContent='Peserta berhasil didaftarkan. '+(status_pembayaran==='lunas'?'Pembayaran LUNAS; peserta boleh memilih kursi.':'Peserta belum bisa memilih kursi sampai pembayaran lunas.');}const successMessage=msg.textContent;resetPaymentForm();msg.textContent=successMessage;await Promise.all([loadPaymentData(),loadData()]);if($('publicBookingName')?.value.trim().toLowerCase()===nama.toLowerCase())await checkPublicBookingPayment();if($('adminBookingName')?.value.trim().toLowerCase()===nama.toLowerCase())await checkAdminBookingPayment();}catch(err){msg.textContent='Gagal menyimpan data pembayaran: '+(err.message||err);}finally{btn.disabled=false;}}
 async function deletePaymentParticipant(id){const row=paymentData.find(r=>String(r.id)===String(id));if(!row)return;const booked=data.find(r=>r.nama&&(r.nama||'').trim().toLowerCase()===row.nama.trim().toLowerCase());const promptText=booked?'Hapus data pembayaran '+row.nama+' dan kosongkan kursi '+booked.nomor_kursi+'?':'Hapus data pembayaran '+row.nama+'?';if(!confirm(promptText+' Tindakan ini tidak dapat dibatalkan.'))return;try{if(booked){const {error:seatError}=await db.from('kursi_bus').update({nama:null,no_hp:null,updated_at:new Date().toISOString()}).eq('nomor_kursi',booked.nomor_kursi);if(seatError)throw new Error('Gagal mengosongkan kursi '+booked.nomor_kursi+': '+seatError.message);}const {error}=await db.from('participant_payments').delete().eq('id',row.id);if(error)throw error;resetPaymentForm();await Promise.all([loadPaymentData(),loadData()]);toast('Data pembayaran '+row.nama+' dihapus');}catch(err){alert('Gagal menghapus data pembayaran: '+(err.message||err));}}
-async function togglePaymentStatus(id){
- if(!isAdmin()){toast('Login admin diperlukan.');return;}
- const row=paymentData.find(r=>String(r.id)===String(id));if(!row)return;
- const next=row.status_pembayaran==='lunas'?'belum_lunas':'lunas';
- const booked=data.find(r=>r.nama&&(r.nama||'').trim().toLowerCase()===String(row.nama||'').trim().toLowerCase());
- if(next==='belum_lunas'&&booked&&!confirm('Peserta '+row.nama+' memiliki kursi '+booked.nomor_kursi+'. Jika pembayaran diubah menjadi BELUM LUNAS, kursi akan dikosongkan. Lanjutkan?'))return;
- try{
-  const {error}=await db.from('participant_payments').update({status_pembayaran:next,updated_at:new Date().toISOString()}).eq('id',row.id);
-  if(error)throw error;
-  if(next==='belum_lunas'&&booked){
-   const {error:seatError}=await db.from('kursi_bus').update({nama:null,no_hp:null,updated_at:new Date().toISOString()}).eq('nomor_kursi',booked.nomor_kursi);
-   if(seatError){
-    // Coba pulihkan status pembayaran agar data tidak sengaja berbeda.
-    const {error:rollbackError}=await db.from('participant_payments').update({status_pembayaran:'lunas',updated_at:new Date().toISOString()}).eq('id',row.id);
-    throw new Error('Gagal mengosongkan kursi '+booked.nomor_kursi+': '+seatError.message+(rollbackError?' | Status pembayaran juga gagal dipulihkan: '+rollbackError.message:' | Status pembayaran dipulihkan menjadi LUNAS.'));
-   }
-  }
-  await Promise.all([loadPaymentData(),loadData()]);
-  if($('adminBookingName')?.value.trim().toLowerCase()===String(row.nama||'').trim().toLowerCase())await checkAdminBookingPayment();
-  if($('publicBookingName')?.value.trim().toLowerCase()===String(row.nama||'').trim().toLowerCase())await checkPublicBookingPayment();
-  toast('Status pembayaran '+row.nama+' diubah menjadi '+(next==='lunas'?'LUNAS':'BELUM LUNAS')+(next==='belum_lunas'&&booked?' dan kursi '+booked.nomor_kursi+' dikosongkan.':'.'));
- }catch(err){console.error('togglePaymentStatus:',err);toast('Gagal mengubah status pembayaran: '+(err.message||err));await Promise.all([loadPaymentData(),loadData()]);}
-}
+async function togglePaymentStatus(id){const row=paymentData.find(r=>String(r.id)===String(id));if(!row)return;const next=row.status_pembayaran==='lunas'?'belum_lunas':'lunas';const booked=next==='belum_lunas'?data.find(r=>r.nama&&(r.nama||'').trim().toLowerCase()===String(row.nama||'').trim().toLowerCase()):null;if(booked&&!confirm('Peserta ini memiliki kursi '+booked.nomor_kursi+'. Jika status menjadi BELUM LUNAS, kursi akan dikosongkan. Lanjutkan?'))return;try{if(booked){const {error:seatError}=await db.from('kursi_bus').update({nama:null,no_hp:null,updated_at:new Date().toISOString()}).eq('nomor_kursi',booked.nomor_kursi);if(seatError)throw seatError;}const {error}=await db.from('participant_payments').update({status_pembayaran:next,updated_at:new Date().toISOString()}).eq('id',row.id);if(error)throw error;await Promise.all([loadPaymentData(),loadData()]);toast('Status pembayaran '+row.nama+' diubah menjadi '+(next==='lunas'?'LUNAS':'BELUM LUNAS'));}catch(err){toast('Gagal mengubah status pembayaran: '+(err.message||err));}}
 function startAdminBookingEdit(seat){const row=record(seat);if(!row||!row.nama){toast('Booking tidak ditemukan.');return;}adminBookingEditSeat=Number(seat);adminBookingEligible=false;$('adminBookingName').value=row.nama;$('adminBookingPhone').value=row.no_hp||'';$('adminBookingMsg').textContent='Mode edit booking kursi '+seat+'. Ubah nama, HP, atau kursi lalu simpan.';$('adminBookingSubmit').textContent='Simpan Perubahan Booking';$('cancelAdminBookingEdit')?.classList.remove('hidden');goPage('booking');updateBookingUI();$('adminBookingSeat').value=String(seat);checkAdminBookingPayment();$('adminBookingName').focus();}
 function resetAdminBookingForm(){adminBookingEditSeat=null;adminBookingEligible=false;$('adminBookingForm')?.reset();$('adminBookingSubmit').textContent='Simpan Booking';$('cancelAdminBookingEdit')?.classList.add('hidden');if($('adminBookingMsg'))$('adminBookingMsg').textContent='';if($('adminBookingPaymentStatus'))$('adminBookingPaymentStatus').textContent='Masukkan nama peserta yang sudah terdaftar dan lunas untuk membuka pilihan kursi.';updateBookingUI();}
 async function submitBookingForm(e,mode){
@@ -1345,9 +1498,9 @@ function setView(view){
  if(isPublic){$('loginPanel').classList.add('hidden');$('adminPanel').classList.add('hidden');if(!document.querySelector('.public-view-section:not(.hidden)'))showPublicPage('home');return}
  checkSession();
 }
-async function checkSession(){const {data:s}=await db.auth.getSession();user=s.session?.user||null;if(!user){$('sidebar').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('adminPanel').classList.add('hidden');return}if(user.app_metadata?.role!=='admin'){await db.auth.signOut();user=null;$('sidebar').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('adminPanel').classList.add('hidden');$('loginMsg').textContent='Akun ini belum memiliki role admin. Atur app_metadata.role = admin melalui proses admin yang aman di Supabase.';return}$('loginPanel').classList.add('hidden');$('adminPanel').classList.remove('hidden');$('sidebar').classList.remove('hidden');$('adminLabel').textContent='Admin';$('adminEmail').textContent=user.email||'Panitia Event';await loadData();await loadAttendance();await loadActiveAttendanceSession();await loadPaymentData();try{const savedPage=localStorage.getItem('kpw_admin_page_checkpoint');if(['dashboard','participants','attendance','seats','booking','reports','backup','settings','rundown'].includes(savedPage))goPage(savedPage);else goPage('dashboard')}catch(_e){goPage('dashboard')}}
-async function saveParticipant(e){e.preventDefault();if(!isAdmin()){$('seatMsg').textContent='Login admin diperlukan.';return}const n=Number($('seatNo').value),nama=$('seatName').value.trim(),no_hp=$('seatPhone').value.trim();if(!Number.isInteger(n)||n<1||n>59){$('seatMsg').textContent='Nomor kursi harus 1 sampai 59.';return}if(nama.length<2){$('seatMsg').textContent='Nama minimal 2 karakter.';return}const duplicate=data.find(r=>r.nama&&r.nama.trim().toLowerCase()===nama.toLowerCase()&&Number(r.nomor_kursi)!==n);if(duplicate){$('seatMsg').textContent='Nama sudah digunakan di kursi '+duplicate.nomor_kursi+'. Gunakan nama peserta yang berbeda.';return}const pay=await findPaymentByName(nama);if(!pay||pay.status_pembayaran!=='lunas'){$('seatMsg').textContent='Peserta belum lunas. Daftarkan/ubah status pembayaran menjadi LUNAS di menu Booking Kursi sebelum menetapkan kursi.';return}if(lockedSeats.has(n)){ $('seatMsg').textContent='Kursi ini terkunci. Buka kunci sebelum menyimpan.';return}const occupied=record(n);if(occupied?.nama&&n!==selectedSeat&&occupied.nama.toLowerCase()!==nama.toLowerCase()){if(!confirm('Kursi ini sudah diisi '+occupied.nama+'. Ganti data kursi?'))return}const btn=$('saveSeat');btn.disabled=true;btn.textContent='Menyimpan…';const {error}=await db.from('kursi_bus').upsert({nomor_kursi:n,nama,no_hp:no_hp||null,updated_at:new Date().toISOString()},{onConflict:'nomor_kursi'});btn.disabled=false;btn.textContent='Simpan Peserta';if(error){$('seatMsg').textContent='Gagal menyimpan: '+error.message;return}selectedSeat=n;$('seatMsg').textContent='Data peserta berhasil disimpan.';toast('Peserta tersimpan pada kursi '+n);await loadData();goPage('participants')}
-async function releaseSeat(n){if(!isAdmin())return toast('Login admin diperlukan');if(!confirm('Kosongkan kursi '+n+'? Data kursi tetap disimpan, hanya data peserta yang dihapus.'))return;const {error}=await db.from('kursi_bus').update({nama:null,no_hp:null,updated_at:new Date().toISOString()}).eq('nomor_kursi',n);if(error){toast('Gagal mengosongkan: '+error.message);return}const existing=data.find(r=>Number(r.nomor_kursi)===Number(n));if(existing){existing.nama=null;existing.no_hp=null}else data.push({nomor_kursi:Number(n),nama:null,no_hp:null});renderMaps();updateStats();updateParticipantRows();showSeatDetails(n);if($('seatMsg'))$('seatMsg').textContent='Kursi '+n+' sudah dikosongkan.';toast('Kursi '+n+' dikosongkan')}
+async function checkSession(){const {data:s}=await db.auth.getSession();user=s.session?.user||null;if(!user){$('sidebar').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('adminPanel').classList.add('hidden');return}if(user.app_metadata?.role!=='admin'){await db.auth.signOut();user=null;$('sidebar').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('adminPanel').classList.add('hidden');$('loginMsg').textContent='Akun ini belum memiliki role admin. Atur app_metadata.role = admin melalui proses admin yang aman di Supabase.';return}$('loginPanel').classList.add('hidden');$('adminPanel').classList.remove('hidden');$('sidebar').classList.remove('hidden');$('adminLabel').textContent='Admin';$('adminEmail').textContent=user.email||'Panitia Event';await loadData();await loadAttendance();await loadActiveAttendanceSession();await loadPaymentData();try{const savedPage=localStorage.getItem('kpw_admin_page_checkpoint');if(['dashboard','participants','attendance','seats','booking','reports','backup','settings','rundown','tools'].includes(savedPage))goPage(savedPage);else goPage('dashboard')}catch(_e){goPage('dashboard')}}
+async function saveParticipant(e){e.preventDefault();if(!user){$('seatMsg').textContent='Login admin diperlukan.';return}const n=Number($('seatNo').value),nama=$('seatName').value.trim(),no_hp=$('seatPhone').value.trim();if(!Number.isInteger(n)||n<1||n>59){$('seatMsg').textContent='Nomor kursi harus 1 sampai 59.';return}if(nama.length<2){$('seatMsg').textContent='Nama minimal 2 karakter.';return}const duplicate=data.find(r=>r.nama&&r.nama.trim().toLowerCase()===nama.toLowerCase()&&Number(r.nomor_kursi)!==n);if(duplicate){$('seatMsg').textContent='Nama sudah digunakan di kursi '+duplicate.nomor_kursi+'. Gunakan nama peserta yang berbeda.';return}const pay=await findPaymentByName(nama);if(!pay||pay.status_pembayaran!=='lunas'){$('seatMsg').textContent='Peserta belum lunas. Daftarkan/ubah status pembayaran menjadi LUNAS di menu Booking Kursi sebelum menetapkan kursi.';return}if(lockedSeats.has(n)){ $('seatMsg').textContent='Kursi ini terkunci. Buka kunci sebelum menyimpan.';return}const occupied=record(n);if(occupied?.nama&&n!==selectedSeat&&occupied.nama.toLowerCase()!==nama.toLowerCase()){if(!confirm('Kursi ini sudah diisi '+occupied.nama+'. Ganti data kursi?'))return}const btn=$('saveSeat');btn.disabled=true;btn.textContent='Menyimpan…';const {error}=await db.from('kursi_bus').upsert({nomor_kursi:n,nama,no_hp:no_hp||null,updated_at:new Date().toISOString()},{onConflict:'nomor_kursi'});btn.disabled=false;btn.textContent='Simpan Peserta';if(error){$('seatMsg').textContent='Gagal menyimpan: '+error.message;return}selectedSeat=n;$('seatMsg').textContent='Data peserta berhasil disimpan.';toast('Peserta tersimpan pada kursi '+n);await loadData();goPage('participants')}
+async function releaseSeat(n){if(!user)return toast('Login admin diperlukan');if(!confirm('Kosongkan kursi '+n+'? Data kursi tetap disimpan, hanya data peserta yang dihapus.'))return;const {error}=await db.from('kursi_bus').update({nama:null,no_hp:null,updated_at:new Date().toISOString()}).eq('nomor_kursi',n);if(error){toast('Gagal mengosongkan: '+error.message);return}const existing=data.find(r=>Number(r.nomor_kursi)===Number(n));if(existing){existing.nama=null;existing.no_hp=null}else data.push({nomor_kursi:Number(n),nama:null,no_hp:null});renderMaps();updateStats();updateParticipantRows();showSeatDetails(n);if($('seatMsg'))$('seatMsg').textContent='Kursi '+n+' sudah dikosongkan.';toast('Kursi '+n+' dikosongkan')}
 function exportCsv(rows,filename){const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function exportSeats(){exportCsv([['Nomor Kursi','Nama','No HP','Status'],...Array.from({length:59},(_,i)=>{const r=record(i+1);return[i+1,r?.nama||'',r?.no_hp||'',r?.nama?'TERISI':'KOSONG']})],'Peserta_KP_Waringin.csv')}
 function exportAtt(){exportCsv([['Waktu Absensi','Sesi','Nama','Nomor Kursi','WhatsApp','Sumber'],...attendanceData.map(r=>[r.waktu_absen||'',r.session_name||'',r.nama||'',r.nomor_kursi||'',r.nomor_wa||'',r.sumber||'Manual'])],'Absensi_KP_Waringin.csv')}
@@ -1367,9 +1520,9 @@ if($('generateAttendanceQr'))$('generateAttendanceQr').addEventListener('click',
 if($('downloadAttendanceQr'))$('downloadAttendanceQr').addEventListener('click',()=>{const box=$('attendanceQrCanvas'),canvas=box.querySelector('canvas'),img=box.querySelector('img');let url;if(canvas)url=canvas.toDataURL('image/png');else if(img){const a=document.createElement('a');a.href=img.src;a.download='QR_Absensi_Family_Gathering_KP_Waringin.png';a.click();return}else{$('attendanceQrMsg').textContent='Generate QR terlebih dahulu.';return}const a=document.createElement('a');a.href=url;a.download='QR_Absensi_Family_Gathering_KP_Waringin.png';a.click()});
 if($('copyAttendanceQrUrl'))$('copyAttendanceQrUrl').addEventListener('click',async()=>{const field=$('attendanceQrUrl');if(!field.value){field.value=attendancePageUrl()}try{await navigator.clipboard.writeText(field.value);$('attendanceQrMsg').textContent='Link absensi berhasil disalin.'}catch(e){field.select();document.execCommand('copy');$('attendanceQrMsg').textContent='Link absensi disalin.'}});
 function showPublicPage(page, options={}){
- const valid=['home','find','booking','info','attendance','rundown'].includes(page)?page:'home';
+ const valid=['home','find','booking','payment-extra','info','attendance','rundown','community'].includes(page)?page:'home';
  // Simpan halaman publik pada URL agar refresh/back/forward tidak mengembalikan ke halaman lama.
- if(!options.skipUrlSync){try{const url=new URL(window.location.href);url.searchParams.delete('absen');if(valid==='home')url.searchParams.delete('page');else url.searchParams.set('page',valid);history.replaceState({publicPage:valid},'',url.pathname+url.search+url.hash);}catch(err){console.warn('URL page state:',err)}}
+ if(!options.skipUrlSync){try{const url=new URL(window.location.href);url.searchParams.delete('absen');if(valid==='home')url.searchParams.delete('page');else url.searchParams.set('page',valid);history.pushState({publicPage:valid},'',url.pathname+url.search+url.hash);}catch(err){console.warn('URL page state:',err)}}
  try{localStorage.setItem('kpw_public_page',valid)}catch(_e){}
  document.querySelectorAll('.public-view-section').forEach(el=>el.classList.toggle('hidden',el.id!=='publicPage-'+valid));
  document.querySelectorAll('[data-public-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.publicPage===valid));
@@ -1381,7 +1534,7 @@ function showPublicPage(page, options={}){
 }
 document.querySelectorAll('[data-public-page]').forEach(btn=>btn.addEventListener('click',()=>showPublicPage(btn.dataset.publicPage)));
 document.querySelectorAll('[data-public-back]').forEach(btn=>btn.addEventListener('click',()=>showPublicPage('home')));
-if(new URLSearchParams(window.location.search).get('absen')==='1'){document.body.classList.add('initial-public');setTimeout(()=>showPublicPage('attendance'),0)}
+if(new URLSearchParams(window.location.search).get('absen')==='1'){document.body.classList.add('initial-public');setTimeout(()=>showPublicPage('attendance',{skipUrlSync:true}),0)}
 $('landingBookBtn')?.addEventListener('click',()=>showPublicPage('booking'));
 $('landingBottomBook')?.addEventListener('click',()=>showPublicPage('booking'));
 $('publicMenuToggle')?.addEventListener('click',()=>document.querySelector('.public-nav')?.classList.toggle('menu-open'));
@@ -1532,92 +1685,84 @@ const realtime=db.channel('kp-waringin-live')
 // Fallback jika koneksi realtime putus: segarkan data saat tab kembali aktif.
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){loadData();loadAttendance();loadActiveAttendanceSession();loadEventSettings();loadRundown();}});
 window.addEventListener('online',()=>{loadData();loadAttendance();loadActiveAttendanceSession();loadEventSettings();loadRundown();});
+
+// === Fitur tambahan Kampoeng Waringin (memerlukan migrasi SQL terlampir) ===
+const featureTables={buses:'kw_buses',groups:'kw_family_groups',swaps:'kw_seat_swap_requests',checkpoints:'kw_checkpoints',proofs:'kw_payment_proofs',cash:'kw_cash_ledger',announcements:'kw_announcements',emergency:'kw_emergency_contacts',gallery:'kw_gallery_items',guestbook:'kw_guestbook',waqueue:'kw_notification_queue'};
+const featureCache={buses:[],groups:[],swaps:[],checkpoints:[],proofs:[],cash:[],announcements:[],emergency:[],gallery:[],guestbook:[],waqueue:[]};
+const moneyID=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(n)||0);
+async function featureLoad(key){const {data:rows,error}=await db.from(featureTables[key]).select('*').order('created_at',{ascending:false}).limit(300);if(error){console.warn('featureLoad '+key,error.message);return []}featureCache[key]=rows||[];return featureCache[key]}
+async function featureSave(key,id,payload){let q=id?db.from(featureTables[key]).update(payload).eq('id',id):db.from(featureTables[key]).insert(payload);const {error}=await q;if(error)throw error;}
+async function featureDelete(key,id){if(!confirm('Hapus data ini?'))return;const {error}=await db.from(featureTables[key]).delete().eq('id',id);if(error){alert('Gagal menghapus: '+error.message);return}await loadFeatureSuite();toast('Data berhasil dihapus')}
+function featureActionButtons(key,id){return '<button class="btn red" type="button" data-feature-delete="'+esc(key)+'" data-feature-id="'+esc(id)+'">Hapus</button>'}
+function featureTableRows(id,rows,html,cols){const el=$(id);if(!el)return;el.innerHTML=rows.length?rows.map(html).join(''):'<tr><td class="empty" colspan="'+cols+'">Belum ada data.</td></tr>'}
+async function loadFeatureSuite(){for(const k of Object.keys(featureTables))await featureLoad(k);
+ featureCache.proofs=await Promise.all(featureCache.proofs.map(async r=>{try{const {data:u}=await db.storage.from('kw-payment-proofs').createSignedUrl(r.file_path,3600);return {...r,file_url:u?.signedUrl||'#'}}catch(_){return {...r,file_url:'#'}}}));
+ featureTableRows('busRows',featureCache.buses,r=>'<tr><td>'+esc(r.name)+' ('+esc(r.code||'—')+')</td><td>'+esc(r.capacity)+'</td><td><button class="btn ghost" data-bus-edit="'+r.id+'">Edit</button> '+featureActionButtons('buses',r.id)+'</td></tr>',3);
+ featureTableRows('groupRows',featureCache.groups,r=>'<tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+esc(r.color||'#0f9d78')+'"></span> '+esc(r.name)+'</td><td>'+esc(r.note||'—')+'</td><td><button class="btn ghost" data-group-edit="'+r.id+'">Edit</button> '+featureActionButtons('groups',r.id)+'</td></tr>',3);
+ featureTableRows('swapRows',featureCache.swaps,r=>'<tr><td>'+esc(r.requester_name)+'</td><td>'+esc(r.from_seat)+' → '+esc(r.to_seat)+'</td><td>'+esc(r.target_name||'—')+'</td><td>'+esc(r.status)+'</td><td>'+(r.status==='pending'?'<button class="btn green" data-swap-approve="'+r.id+'">Setujui</button> <button class="btn red" data-swap-reject="'+r.id+'">Tolak</button>':'—')+'</td></tr>',5);
+ featureTableRows('checkpointRows',featureCache.checkpoints,r=>'<tr><td>'+esc(r.name)+'</td><td>'+esc(r.bus_name||'Semua bus')+'</td><td>'+esc(r.checkpoint_at?new Date(r.checkpoint_at).toLocaleString('id-ID'):'—')+'</td><td>'+featureActionButtons('checkpoints',r.id)+'</td></tr>',4);
+ featureTableRows('proofRows',featureCache.proofs,r=>'<tr><td>'+esc(r.participant_name)+'</td><td>'+moneyID(r.amount)+'</td><td><a target="_blank" rel="noopener" href="'+esc(r.file_url)+'">Lihat bukti</a></td><td>'+esc(r.status)+'</td><td>'+(r.status==='pending'?'<button class="btn green" data-proof-approve="'+r.id+'">Approve / LUNAS</button> <button class="btn red" data-proof-reject="'+r.id+'">Reject</button>':'—')+'</td></tr>',5);
+ const balance=featureCache.cash.reduce((sum,r)=>sum+(r.kind==='masuk'?1:-1)*Number(r.amount||0),0);if($('cashBalance'))$('cashBalance').textContent=moneyID(balance);
+ featureTableRows('cashRows',featureCache.cash,r=>'<tr><td>'+esc(new Date(r.created_at).toLocaleDateString('id-ID'))+'</td><td>'+esc(r.kind)+'</td><td>'+esc(r.note)+'</td><td>'+moneyID(r.amount)+'</td><td>'+featureActionButtons('cash',r.id)+'</td></tr>',5);
+ $('announcementRows').innerHTML=featureCache.announcements.map(r=>'<div class="feature-list-item"><div><b>'+esc(r.message)+'</b><div class="status">'+(r.is_active?'Aktif':'Disembunyikan')+'</div></div><div><button class="btn ghost" data-ann-edit="'+r.id+'">Edit</button> '+featureActionButtons('announcements',r.id)+'</div></div>').join('')||'<p class="status">Belum ada pengumuman.</p>';
+ $('emergencyRows').innerHTML=featureCache.emergency.map(r=>'<div class="feature-list-item"><div><b>'+esc(r.name)+'</b><div class="status">'+esc(r.phone)+'</div></div><div><button class="btn ghost" data-emergency-edit="'+r.id+'">Edit</button> '+featureActionButtons('emergency',r.id)+'</div></div>').join('')||'<p class="status">Belum ada kontak.</p>';
+ $('galleryRows').innerHTML=featureCache.gallery.map(r=>'<div class="feature-gallery-item"><img src="'+esc(r.url)+'" alt="'+esc(r.title)+'" loading="lazy" onerror="this.style.display=\'none\'"><div>'+esc(r.title)+'<p><button class="btn ghost" data-gallery-edit="'+r.id+'">Edit</button> '+featureActionButtons('gallery',r.id)+'</p></div></div>').join('')||'<p class="status">Belum ada galeri.</p>';
+ $('adminGuestbookRows').innerHTML=featureCache.guestbook.map(r=>'<div class="feature-list-item"><div><b>'+esc(r.name)+' · '+('★'.repeat(Math.max(1,Math.min(5,Number(r.rating)||5))))+'</b><div>'+esc(r.message)+'</div><div class="status">'+(r.is_approved?'Tampil publik':'Menunggu moderasi')+'</div></div><div>'+(r.is_approved?'':'<button class="btn green" data-guest-approve="'+r.id+'">Setujui</button> ')+' '+featureActionButtons('guestbook',r.id)+'</div></div>').join('')||'<p class="status">Belum ada ucapan.</p>';
+ $('publicGalleryGrid').innerHTML=featureCache.gallery.map(r=>'<button type="button" class="feature-gallery-item gallery-open" data-gallery-src="'+esc(r.url)+'" data-gallery-title="'+esc(r.title)+'" style="text-align:left;cursor:zoom-in"><img src="'+esc(r.url)+'" alt="'+esc(r.title)+'" loading="lazy" onerror="this.style.display=\'none\'"><div>'+esc(r.title)+'</div></button>').join('')||'<p class="status">Galeri akan ditambahkan panitia.</p>';
+ $('publicGuestbookRows').innerHTML=featureCache.guestbook.filter(r=>r.is_approved).map(r=>'<div class="feature-list-item"><div><b>'+esc(r.name)+' · '+('★'.repeat(Math.max(1,Math.min(5,Number(r.rating)||5))))+'</b><div>'+esc(r.message)+'</div></div></div>').join('')||'<p class="status">Belum ada ucapan yang diterbitkan.</p>';
+ $('publicEmergencyRows').innerHTML=featureCache.emergency.map(r=>'<div class="feature-contact"><b>'+esc(r.name)+'</b><div>'+esc(r.phone)+'</div><a class="btn green" href="tel:'+esc(r.phone.replace(/[^+0-9]/g,''))+'">Telepon</a> <a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/'+esc(r.phone.replace(/\D/g,''))+'">WhatsApp</a></div>').join('')||'<p class="status">Kontak panitia belum tersedia.</p>';
+ const active=featureCache.announcements.find(r=>r.is_active);const banner=$('publicAnnouncementBanner');if(active){banner.textContent=active.message;banner.classList.remove('hidden')}else banner.classList.add('hidden');
+ featureTableRows('waQueueRows',featureCache.waqueue,r=>'<tr><td>'+esc(new Date(r.created_at).toLocaleString('id-ID'))+'</td><td>'+esc(r.phone||'—')+'</td><td>'+esc(r.kind)+'</td><td>'+esc(r.status)+'</td></tr>',4);
+ const busSel=$('checkpointBus');if(busSel){busSel.innerHTML='<option value="">Semua bus</option>'+featureCache.buses.map(r=>'<option value="'+esc(r.id)+'">'+esc(r.name)+'</option>').join('')}
+ const tagSel=$('nameTagParticipant');if(tagSel){tagSel.innerHTML=data.filter(r=>r.nama).map(r=>'<option value="'+esc(r.nomor_kursi)+'">'+esc(r.nama)+' — Kursi '+esc(r.nomor_kursi)+'</option>').join('')||'<option value="">Belum ada peserta</option>'}
+}
+function bindFeatureEvents(){
+ $('busForm')?.addEventListener('submit',async e=>{e.preventDefault();try{const id=$('busEditId').value;await featureSave('buses',id,{name:$('busName').value.trim(),capacity:Number($('busCapacity').value),code:$('busCode').value.trim()||null});$('busMsg').textContent='Bus tersimpan. Catatan: modul denah lama tetap menggunakan Bus 1 sampai migrasi data kursi multi-bus dilakukan.';$('busForm').reset();$('busEditId').value='';await loadFeatureSuite()}catch(err){$('busMsg').textContent=err.message}});
+ $('groupForm')?.addEventListener('submit',async e=>{e.preventDefault();try{await featureSave('groups',$('groupEditId').value,{name:$('groupName').value.trim(),color:$('groupColor').value,note:$('groupNote').value.trim()||null});$('groupForm').reset();$('groupEditId').value='';$('groupMsg').textContent='Rombongan tersimpan. Label ini disimpan untuk pemetaan; belum otomatis mengubah denah kursi lama.';await loadFeatureSuite()}catch(err){$('groupMsg').textContent=err.message}});
+ $('checkpointForm')?.addEventListener('submit',async e=>{e.preventDefault();try{const busId=$('checkpointBus').value;const bus=featureCache.buses.find(r=>String(r.id)===String(busId));await featureSave('checkpoints',null,{name:$('checkpointName').value.trim(),bus_id:busId||null,bus_name:bus?.name||null,checkpoint_at:$('checkpointTime').value?new Date($('checkpointTime').value).toISOString():null});$('checkpointForm').reset();$('checkpointMsg').textContent='Checkpoint tersimpan. Untuk dipakai sebagai sesi absensi aktif, admin tetap perlu membuka sesi dari menu Absensi.';await loadFeatureSuite()}catch(err){$('checkpointMsg').textContent=err.message}});
+ $('cashForm')?.addEventListener('submit',async e=>{e.preventDefault();try{await featureSave('cash',null,{kind:$('cashType').value,amount:Number($('cashAmount').value),note:$('cashNote').value.trim()});$('cashForm').reset();$('cashMsg').textContent='Transaksi tersimpan.';await loadFeatureSuite()}catch(err){$('cashMsg').textContent=err.message}});
+ $('announcementForm')?.addEventListener('submit',async e=>{e.preventDefault();try{await featureSave('announcements',$('announcementEditId').value,{message:$('announcementText').value.trim(),is_active:$('announcementActive').checked});$('announcementForm').reset();$('announcementEditId').value='';$('announcementActive').checked=true;$('announcementMsg').textContent='Pengumuman tersimpan.';await loadFeatureSuite()}catch(err){$('announcementMsg').textContent=err.message}});
+ $('emergencyForm')?.addEventListener('submit',async e=>{e.preventDefault();try{await featureSave('emergency',$('emergencyEditId').value,{name:$('emergencyName').value.trim(),phone:$('emergencyPhone').value.trim()});$('emergencyForm').reset();$('emergencyEditId').value='';$('emergencyMsg').textContent='Kontak tersimpan.';await loadFeatureSuite()}catch(err){$('emergencyMsg').textContent=err.message}});
+ $('galleryForm')?.addEventListener('submit',async e=>{e.preventDefault();try{await featureSave('gallery',$('galleryEditId').value,{title:$('galleryTitle').value.trim(),url:$('galleryUrl').value.trim()});$('galleryForm').reset();$('galleryEditId').value='';$('galleryMsg').textContent='Link galeri tersimpan.';await loadFeatureSuite()}catch(err){$('galleryMsg').textContent=err.message}});
+ $('publicGuestbookForm')?.addEventListener('submit',async e=>{e.preventDefault();try{const {error}=await db.from(featureTables.guestbook).insert({name:$('guestName').value.trim(),rating:Number($('guestRating').value),message:$('guestMessage').value.trim(),is_approved:false});if(error)throw error;$('publicGuestbookForm').reset();$('guestbookMsg').textContent='Terima kasih! Ucapan dikirim dan menunggu moderasi panitia.';toast('Ucapan berhasil dikirim')}catch(err){$('guestbookMsg').textContent='Belum bisa mengirim ucapan. Pastikan migrasi SQL sudah dijalankan. '+err.message}});
+ $('publicSwapForm')?.addEventListener('submit',async e=>{e.preventDefault();if(Number($('swapFrom').value)===Number($('swapTo').value)){ $('swapPublicMsg').textContent='Pilih nomor kursi yang berbeda.';return}try{const {error}=await db.from(featureTables.swaps).insert({requester_name:$('swapRequester').value.trim(),from_seat:Number($('swapFrom').value),to_seat:Number($('swapTo').value),reason:$('swapReason').value.trim()||null,status:'pending'});if(error)throw error;$('publicSwapForm').reset();$('swapPublicMsg').textContent='Permintaan dikirim. Kursi belum berubah sampai disetujui admin.'}catch(err){$('swapPublicMsg').textContent='Gagal mengirim permintaan: '+err.message}});
+ $('publicProofForm')?.addEventListener('submit',async e=>{e.preventDefault();const file=$('proofFile').files?.[0];if(!file)return;try{if(file.size>8*1024*1024)throw new Error('Ukuran file maksimal 8 MB.');const ext=(file.name.split('.').pop()||'bin').toLowerCase().replace(/[^a-z0-9]/g,'');const path=Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;const {data:up,error:upErr}=await db.storage.from('kw-payment-proofs').upload(path,file,{upsert:false,contentType:file.type||'application/octet-stream'});if(upErr)throw upErr;const {data:pub}=db.storage.from('kw-payment-proofs').getPublicUrl(up.path);const {error}=await db.from(featureTables.proofs).insert({participant_name:$('proofName').value.trim(),amount:Number($('proofAmount').value),file_path:up.path,file_url:pub.publicUrl,status:'pending'});if(error)throw error;$('publicProofForm').reset();$('proofPublicMsg').textContent='Bukti berhasil dikirim dan menunggu verifikasi admin.'}catch(err){$('proofPublicMsg').textContent='Gagal mengunggah. Jalankan SQL setup dan bucket storage terlebih dahulu. '+err.message}});
+ $('printNameTag')?.addEventListener('click',()=>{const seat=Number($('nameTagParticipant').value);const r=data.find(x=>Number(x.nomor_kursi)===seat);if(!r?.nama){$('nameTagMsg').textContent='Pilih peserta yang sudah terdaftar.';return}const w=window.open('','_blank','width=800,height=600');if(!w){$('nameTagMsg').textContent='Izinkan pop-up browser untuk mencetak name tag.';return}const payload=JSON.stringify({event:'Kampoeng Waringin',name:r.nama,seat});w.document.write(`<!doctype html><html><head><title>Name Tag</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:Arial;padding:24px}.tag{width:90mm;min-height:55mm;border:2px solid #0b6b55;border-radius:12px;padding:14px;text-align:center;display:grid;grid-template-columns:1fr 70px;align-items:center;gap:8px}h1{font-size:20px;margin:0 0 8px}p{margin:5px}.seat{font-size:26px;font-weight:bold;color:#0b6b55}#qr{width:68px;height:68px}@media print{body{padding:0}}</style><script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script></head><body><div class="tag"><div><p>FAMILY GATHERING</p><h1>KAMPOENG WARINGIN</h1><h2>${esc(r.nama)}</h2><p class="seat">KURSI ${esc(r.nomor_kursi)}</p><p>Kawah Putih · 1 November 2026</p></div><div id="qr"></div></div><script>const payload=${JSON.stringify(payload)};window.onload=()=>{if(window.QRCode)new QRCode(document.getElementById('qr'),{text:payload,width:68,height:68});setTimeout(()=>window.print(),700)};<\/script></body></html>`);w.document.close()});
+ document.addEventListener('click' ,async e=>{const b=e.target.closest('button');if(!b)return;try{
+  if(b.dataset.featureDelete){await featureDelete(b.dataset.featureDelete,b.dataset.featureId);await loadFeatureSuite()}
+  if(b.dataset.busEdit){const r=featureCache.buses.find(x=>String(x.id)===b.dataset.busEdit);if(r){$('busEditId').value=r.id;$('busName').value=r.name;$('busCapacity').value=r.capacity;$('busCode').value=r.code||''}}
+  if(b.dataset.groupEdit){const r=featureCache.groups.find(x=>String(x.id)===b.dataset.groupEdit);if(r){$('groupEditId').value=r.id;$('groupName').value=r.name;$('groupColor').value=r.color||'#0f9d78';$('groupNote').value=r.note||''}}
+  if(b.dataset.annEdit){const r=featureCache.announcements.find(x=>String(x.id)===b.dataset.annEdit);if(r){$('announcementEditId').value=r.id;$('announcementText').value=r.message;$('announcementActive').checked=!!r.is_active}}
+  if(b.dataset.emergencyEdit){const r=featureCache.emergency.find(x=>String(x.id)===b.dataset.emergencyEdit);if(r){$('emergencyEditId').value=r.id;$('emergencyName').value=r.name;$('emergencyPhone').value=r.phone}}
+  if(b.dataset.galleryEdit){const r=featureCache.gallery.find(x=>String(x.id)===b.dataset.galleryEdit);if(r){$('galleryEditId').value=r.id;$('galleryTitle').value=r.title;$('galleryUrl').value=r.url}}
+  if(b.dataset.swapApprove){const r=featureCache.swaps.find(x=>String(x.id)===b.dataset.swapApprove);if(r&&confirm('Setujui tukar kursi '+r.from_seat+' ↔ '+r.to_seat+'? Pastikan kedua kursi sesuai data peserta.')){const {error}=await db.from(featureTables.swaps).update({status:'approved',reviewed_at:new Date().toISOString(),reviewed_by:user?.id||null}).eq('id',r.id);if(error)throw error;toast('Permintaan ditandai disetujui. Perpindahan kursi harus diterapkan admin pada denah booking setelah verifikasi.');await loadFeatureSuite()}}
+  if(b.dataset.swapReject){const {error}=await db.from(featureTables.swaps).update({status:'rejected',reviewed_at:new Date().toISOString(),reviewed_by:user?.id||null}).eq('id',b.dataset.swapReject);if(error)throw error;await loadFeatureSuite()}
+  if(b.dataset.proofApprove||b.dataset.proofReject){const approve=!!b.dataset.proofApprove,id=b.dataset.proofApprove||b.dataset.proofReject,r=featureCache.proofs.find(x=>String(x.id)===id);const {error}=await db.from(featureTables.proofs).update({status:approve?'approved':'rejected',reviewed_at:new Date().toISOString(),reviewed_by:user?.id||null}).eq('id',id);if(error)throw error;if(approve&&r){const {data:existing}=await db.from('payments').select('id').ilike('nama',r.participant_name).limit(1);if(existing?.length)await db.from('payments').update({status_pembayaran:'lunas',nominal:Number(r.amount)}).eq('id',existing[0].id);else console.warn('Pembayaran ditandai approve, tetapi nama belum ditemukan di tabel payments:',r.participant_name)}await loadPaymentData();await loadFeatureSuite();toast(approve?'Bukti disetujui; periksa status pembayaran peserta.':'Bukti ditolak')}
+  if(b.dataset.guestApprove){const {error}=await db.from(featureTables.guestbook).update({is_approved:true,approved_at:new Date().toISOString()}).eq('id',b.dataset.guestApprove);if(error)throw error;await loadFeatureSuite()}
+ }catch(err){console.error(err);alert('Operasi gagal: '+(err.message||err))}});
+}
+$('queueWhatsAppBtn')?.addEventListener('click',async()=>{if(!isAdmin()){toast('Login admin diperlukan');return}try{const kind=$('waQueueType').value,msg=$('waQueueMessage').value.trim();let recipients=[];if(kind==='reminder_h1'||kind==='ticket'){recipients=paymentData.filter(r=>r.no_hp&&String(r.no_hp).trim());}else{recipients=paymentData.filter(r=>r.no_hp&&String(r.no_hp).trim());if(!msg)throw new Error('Isi pesan pengumuman terlebih dahulu.')}if(!recipients.length)throw new Error('Belum ada nomor WhatsApp di data pembayaran.');const rows=recipients.map(r=>({phone:String(r.no_hp).replace(/\D/g,''),participant_name:r.nama,kind,message:msg|| (kind==='reminder_h1'?'Pengingat Family Gathering Kampoeng Waringin besok. Tanggal 1 November 2026, tujuan Kawah Putih. Mohon hadir tepat waktu.':kind==='ticket'?'Konfirmasi Family Gathering Kampoeng Waringin. Silakan cek status pembayaran dan detail kursi melalui website resmi acara.':''),status:'pending'}));const {error}=await db.from(featureTables.waqueue).insert(rows);if(error)throw error;$('waQueueMsg').textContent=rows.length+' pesan masuk antrean. Pesan belum dikirim sampai Edge Function WhatsApp diaktifkan.';await loadFeatureSuite()}catch(err){$('waQueueMsg').textContent=err.message}});
+$('refreshFeatureData')?.addEventListener('click',loadFeatureSuite);
+$('busReset')?.addEventListener('click',()=>{$('busForm').reset();$('busEditId').value=''});$('groupReset')?.addEventListener('click',()=>{$('groupForm').reset();$('groupEditId').value=''});$('announcementReset')?.addEventListener('click',()=>{$('announcementForm').reset();$('announcementEditId').value='';$('announcementActive').checked=true});$('emergencyReset')?.addEventListener('click',()=>{$('emergencyForm').reset();$('emergencyEditId').value=''});$('galleryReset')?.addEventListener('click',()=>{$('galleryForm').reset();$('galleryEditId').value=''});
+const originalGoPage=goPage;goPage=function(page){if(page==='tools'){try{localStorage.setItem('kpw_admin_page_checkpoint','tools')}catch(_){}document.querySelectorAll('.adminpage').forEach(s=>s.classList.toggle('hidden',s.id!=='page-tools'));document.querySelectorAll('.sidebtn[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page==='tools'));loadFeatureSuite();return}originalGoPage(page)};
+const originalShowPublicPage=showPublicPage;showPublicPage=function(page,options={}){originalShowPublicPage(page,options);if(['community','payment-extra'].includes(page))loadFeatureSuite()};
+// Restore the selected public page after refresh and support browser Back/Forward.
+window.addEventListener('popstate',()=>{const p=new URLSearchParams(location.search).get('page');showPublicPage(p||'home',{skipUrlSync:true})});
+(function restorePublicRoute(){const params=new URLSearchParams(location.search);const route=params.get('page');if(route){showPublicPage(route,{skipUrlSync:true});return}if(params.get('absen')==='1'){showPublicPage('attendance',{skipUrlSync:true});return}try{const saved=localStorage.getItem('kpw_public_page');if(saved&&['home','find','booking','payment-extra','info','attendance','rundown','community'].includes(saved))showPublicPage(saved,{skipUrlSync:true})}catch(_){}})();
+
+// Public quick contact, gallery modal, simple client-side search and optional Google Form embed.
+(function bindPublicEnhancements(){
+ const wa=$('quickWhatsAppBtn');
+ wa?.addEventListener('click',()=>{let phone='';try{phone=localStorage.getItem('kw_public_admin_wa')||''}catch(_){}if(!phone){phone=prompt('Masukkan nomor WhatsApp admin dengan kode negara, contoh 6281234567890. Nomor disimpan hanya di browser ini:','');if(!phone)return;phone=phone.replace(/[^0-9]/g,'');if(!/^62[0-9]{8,13}$/.test(phone)){alert('Nomor harus diawali 62 dan hanya berisi angka.');return}try{localStorage.setItem('kw_public_admin_wa',phone)}catch(_){}}const message=encodeURIComponent('Halo Admin Kampoeng Waringin, saya ingin bertanya tentang Family Gathering.');window.open('https://wa.me/'+phone+'?text='+message,'_blank','noopener');});
+ const lightbox=$('galleryLightbox'),lightboxImg=$('galleryLightboxImage');
+ document.addEventListener('click',e=>{const btn=e.target.closest('.gallery-open');if(btn){lightboxImg.src=btn.dataset.gallerySrc;lightboxImg.alt=btn.dataset.galleryTitle||'Foto galeri';lightbox.classList.add('open');lightbox.focus()} });
+ const close=()=>{lightbox.classList.remove('open');lightboxImg.removeAttribute('src')};$('closeGalleryLightbox')?.addEventListener('click',close);lightbox?.addEventListener('click',e=>{if(e.target===lightbox)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+ const filter=(inputId,containerId)=>$(inputId)?.addEventListener('input',()=>{const q=$(inputId).value.trim().toLocaleLowerCase('id');$(containerId)?.querySelectorAll('.agenda-item,.feature-gallery-item').forEach(el=>{el.style.display=el.textContent.toLocaleLowerCase('id').includes(q)?'':'none'})});
+ filter('communitySearch','communityAgenda');filter('gallerySearch','publicGalleryGrid');
+ const urlInput=$('communityFormUrl'),wrap=$('communityFormEmbedWrap'),frame=$('communityFormEmbed'),open=$('communityFormOpen');
+ const setFormUrl=url=>{if(!url)return;try{const u=new URL(url);if(!['https:'].includes(u.protocol))throw new Error('Gunakan URL HTTPS.');if(!/(docs\.google\.com\/forms|forms\.gle|tally\.so)/i.test(u.hostname+u.pathname))throw new Error('Gunakan tautan Google Forms atau Tally.');let embed=u.href;if(/docs\.google\.com\/forms\/d\//i.test(embed)&&!/[?&]embedded=true/.test(embed))embed+=(embed.includes('?')?'&':'?')+'embedded=true';if(/tally\.so\//i.test(embed)&&!embed.includes('?'))embed+='?';frame.src=embed;open.href=u.href;wrap.classList.remove('hidden');$('communityFormStatus').textContent='Form siap ditampilkan. Tautan tersimpan pada browser ini.';try{localStorage.setItem('kw_community_form_url',u.href)}catch(_){}}catch(err){$('communityFormStatus').textContent=err.message}};
+ $('saveCommunityFormUrl')?.addEventListener('click',()=>setFormUrl(urlInput.value.trim()));$('clearCommunityFormUrl')?.addEventListener('click',()=>{try{localStorage.removeItem('kw_community_form_url')}catch(_){}urlInput.value='';frame.removeAttribute('src');wrap.classList.add('hidden');$('communityFormStatus').textContent='Tautan form dihapus dari browser ini.'});
+ try{const saved=localStorage.getItem('kw_community_form_url');if(saved&&urlInput){urlInput.value=saved;setFormUrl(saved)}}catch(_){}
+})();
+bindFeatureEvents();
 </script></body></html>
-<style id="kw-mobile-hero-overlap-fix">
-/* Perbaikan khusus: hero mobile tidak boleh menumpuk tombol, metadata, dan caption */
-@media (max-width: 600px) {
-  #publicView .landing-hero {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-    min-height: 0 !important;
-    height: auto !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    background-position: center center !important;
-  }
-  #publicView .landing-content {
-    position: relative !important;
-    width: 100% !important;
-    max-width: none !important;
-    padding: 25px 17px 20px !important;
-    margin: 0 !important;
-    flex: 0 0 auto !important;
-  }
-  #publicView .landing-eyebrow {
-    display: inline-flex !important;
-    max-width: 100% !important;
-    line-height: 1.5 !important;
-    letter-spacing: 1px !important;
-    margin: 0 0 14px !important;
-    white-space: normal !important;
-  }
-  #publicView .landing-content h1 {
-    font-size: clamp(30px, 8.8vw, 40px) !important;
-    line-height: 1.08 !important;
-    letter-spacing: -1px !important;
-    overflow-wrap: break-word !important;
-    margin: 0 0 12px !important;
-  }
-  #publicView .landing-subtitle { margin: 10px 0 6px !important; line-height: 1.4 !important; }
-  #publicView .landing-copy { margin: 0 !important; line-height: 1.6 !important; }
-  #publicView .landing-meta {
-    display: grid !important;
-    grid-template-columns: minmax(0,1fr) !important;
-    gap: 9px !important;
-    margin: 16px 0 0 !important;
-  }
-  #publicView .landing-meta span { min-width: 0 !important; line-height: 1.45 !important; align-items: flex-start !important; overflow-wrap: anywhere !important; }
-  #publicView .landing-actions {
-    display: grid !important;
-    grid-template-columns: minmax(0,1fr) !important;
-    width: 100% !important;
-    gap: 9px !important;
-    margin: 17px 0 0 !important;
-  }
-  #publicView .landing-actions > *,
-  #publicView .landing-primary,
-  #publicView .landing-secondary {
-    display: flex !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    min-height: 44px !important;
-    margin: 0 !important;
-    justify-content: center !important;
-    white-space: normal !important;
-    text-align: center !important;
-    line-height: 1.35 !important;
-  }
-  #publicView .landing-photo-caption {
-    position: relative !important;
-    inset: auto !important;
-    width: auto !important;
-    max-width: none !important;
-    margin: 0 12px 12px !important;
-    padding: 12px 14px !important;
-    flex: 0 0 auto !important;
-    border-radius: 13px !important;
-    background: rgba(5, 35, 34, .72) !important;
-    overflow-wrap: anywhere !important;
-  }
-  #publicView .landing-photo-caption b { font-size: 16px !important; line-height: 1.25 !important; }
-  #publicView .landing-photo-caption small { line-height: 1.45 !important; }
-}
-@media (max-width: 360px) {
-  #publicView .landing-content { padding: 21px 13px 17px !important; }
-  #publicView .landing-content h1 { font-size: 29px !important; }
-  #publicView .landing-meta span { font-size: 10px !important; }
-  #publicView .landing-photo-caption { margin: 0 9px 9px !important; }
-}
-</style>

@@ -413,7 +413,11 @@ async function saveAdminParticipant(e) {
 }
 
 async function releaseAdminSeat(n) {
-  if (!confirm(`Kosongkan Kursi ${n}? Data nama dan HP akan dihapus.`)) return;
+  const current = recordAdminSeat(n);
+  const currentName = (current?.nama || '').trim();
+
+  if (!confirm(`Kosongkan Kursi ${n}${currentName ? ' (' + currentName + ')' : ''}?`)) return;
+
   try {
     const { error } = await db.from('kursi_bus').update({
       nama: null,
@@ -422,8 +426,27 @@ async function releaseAdminSeat(n) {
     }).eq('nomor_kursi', n);
 
     if (error) throw error;
-    toast(`Kursi ${n} dikosongkan`);
-    await loadAdminSeats();
+
+    // If there was a participant name, also remove from participant_paid_roster so they're completely cleared
+    if (currentName) {
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=ilike.${encodeURIComponent(currentName)}`, {
+          method: 'DELETE',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        await db.from('participant_paid_roster').delete().ilike('nama', currentName);
+        await db.from('participant_payments').delete().ilike('nama', currentName);
+      } catch (_e) {}
+    }
+
+    toast(`Kursi ${n} ${currentName ? '(' + currentName + ') ' : ''}berhasil dikosongkan.`);
+    await Promise.allSettled([
+      loadAdminSeats(),
+      loadAdminPaymentData()
+    ]);
   } catch (err) {
     alert('Gagal mengosongkan kursi: ' + err.message);
   }
@@ -877,7 +900,16 @@ async function deletePaymentParticipant(nama, id) {
       }
     });
 
-    // 3. Also delete from participant_payments
+    // 3. Clear any seat assigned to this participant in kursi_bus (frees up on website too!)
+    try {
+      await db.from('kursi_bus').update({
+        nama: null,
+        no_hp: null,
+        updated_at: new Date().toISOString()
+      }).ilike('nama', cleanName);
+    } catch (_eSeat) {}
+
+    // 4. Also delete from participant_payments
     try {
       if (id && id !== cleanName && id !== 'undefined') {
         await db.from('participant_payments').delete().eq('id', id);
@@ -892,15 +924,18 @@ async function deletePaymentParticipant(nama, id) {
       });
     } catch (_e2) {}
 
-    // 4. Update in-memory data and re-render
+    // 5. Update in-memory data and re-render
     adminPaymentData = adminPaymentData.filter(r => r.nama.toLowerCase().trim() !== cleanName.toLowerCase());
     renderAdminPaymentRows();
 
     toast(`✓ Data pembayaran "${cleanName}" berhasil dihapus.`);
 
-    // 5. Re-sync from server after brief pause
+    // 6. Re-sync both payments and bus seats from server
     setTimeout(async () => {
-      await loadAdminPaymentData();
+      await Promise.allSettled([
+        loadAdminPaymentData(),
+        loadAdminSeats()
+      ]);
     }, 350);
   } catch (err) {
     console.error('deletePaymentParticipant error:', err);

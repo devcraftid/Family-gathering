@@ -31,6 +31,50 @@ let adminEventSettings = {
 };
 
 // --------------------------------------------------------------------------
+// 0. Persistence & Auth Helpers
+// --------------------------------------------------------------------------
+function getDeletedPaymentNames() {
+  try {
+    const raw = localStorage.getItem('kw_deleted_payments');
+    return raw ? JSON.parse(raw) : [];
+  } catch (_e) {
+    return [];
+  }
+}
+
+function addDeletedPaymentName(name) {
+  const clean = (name || '').trim().toLowerCase();
+  if (!clean) return;
+  const list = getDeletedPaymentNames();
+  if (!list.includes(clean)) {
+    list.push(clean);
+    localStorage.setItem('kw_deleted_payments', JSON.stringify(list));
+  }
+}
+
+function removeDeletedPaymentName(name) {
+  const clean = (name || '').trim().toLowerCase();
+  if (!clean) return;
+  const list = getDeletedPaymentNames().filter(n => n !== clean);
+  localStorage.setItem('kw_deleted_payments', JSON.stringify(list));
+}
+
+async function getAdminAuthHeaders() {
+  let token = SUPABASE_KEY;
+  try {
+    const { data: s } = await db.auth.getSession();
+    if (s?.session?.access_token) {
+      token = s.session.access_token;
+    }
+  } catch (_e) {}
+  return {
+    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  };
+}
+
+// --------------------------------------------------------------------------
 // 1. Authentication & Session
 // --------------------------------------------------------------------------
 async function checkAdminAuth() {
@@ -401,6 +445,7 @@ async function saveAdminParticipant(e) {
     }, { onConflict: 'nomor_kursi' });
 
     if (error) throw error;
+    removeDeletedPaymentName(nama);
     msg.textContent = `Peserta berhasil disimpan pada Kursi ${n}.`;
     toast(`Peserta disimpan pada Kursi ${n}`);
     await loadAdminSeats();
@@ -429,13 +474,12 @@ async function releaseAdminSeat(n) {
 
     // If there was a participant name, also remove from participant_paid_roster so they're completely cleared
     if (currentName) {
+      addDeletedPaymentName(currentName);
       try {
+        const authHeaders = await getAdminAuthHeaders();
         await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=ilike.${encodeURIComponent(currentName)}`, {
           method: 'DELETE',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          }
+          headers: authHeaders
         });
         await db.from('participant_paid_roster').delete().ilike('nama', currentName);
         await db.from('participant_payments').delete().ilike('nama', currentName);
@@ -620,14 +664,12 @@ async function loadAdminPaymentData() {
 
   try {
     let list = [];
+    const authHeaders = await getAdminAuthHeaders();
 
     // 1. Fetch from participant_paid_roster via direct REST (guaranteed to read live rows)
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?select=*&order=nama.asc`, {
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
-        }
+        headers: authHeaders
       });
       if (res.ok) {
         const roster = await res.json();
@@ -673,6 +715,10 @@ async function loadAdminPaymentData() {
       }
     } catch (_e2) {}
 
+    // 3. Filter out any locally deleted payments (prevents resurrection)
+    const blacklist = new Set(getDeletedPaymentNames());
+    list = list.filter(item => !blacklist.has((item.nama || '').toLowerCase().trim()));
+
     adminPaymentData = list;
     renderAdminPaymentRows();
   } catch (err) {
@@ -711,10 +757,12 @@ function renderAdminPaymentRows() {
         </span>
       </td>
       <td>
-        <button class="btn ghost" type="button" data-toggle-payment="${encodeURIComponent(r.nama)}" data-id="${esc(r.id || '')}">
-          ${r.status_pembayaran === 'lunas' ? 'Ubah Belum Lunas' : 'Tandai LUNAS'}
-        </button>
-        <button class="btn red" type="button" data-del-payment="${encodeURIComponent(r.nama)}" data-id="${esc(r.id || '')}">Hapus</button>
+        <div style="display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap">
+          <button class="btn ghost" type="button" data-toggle-payment="${encodeURIComponent(r.nama)}" data-id="${esc(r.id || '')}">
+            ${r.status_pembayaran === 'lunas' ? 'Ubah Belum Lunas' : 'Tandai LUNAS'}
+          </button>
+          <button class="btn red" type="button" data-del-payment="${encodeURIComponent(r.nama)}" data-id="${esc(r.id || '')}">Hapus</button>
+        </div>
       </td>
     </tr>
   `).join('');
@@ -723,7 +771,7 @@ function renderAdminPaymentRows() {
     b.onclick = () => togglePaymentStatus(decodeURIComponent(b.dataset.togglePayment), b.dataset.id);
   });
   body.querySelectorAll('[data-del-payment]').forEach(b => {
-    b.onclick = () => deletePaymentParticipant(decodeURIComponent(b.dataset.delPayment), b.dataset.id);
+    b.onclick = (e) => deletePaymentParticipant(decodeURIComponent(b.dataset.delPayment), b.dataset.id, e.currentTarget);
   });
 }
 
@@ -746,32 +794,22 @@ async function handleAdminPaymentSubmit(e) {
 
   try {
     // 1. Direct REST request to participant_paid_roster (check then update/insert)
+    const authHeaders = await getAdminAuthHeaders();
     const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=ilike.${encodeURIComponent(name)}&select=*`, {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`
-      }
+      headers: authHeaders
     });
     const existing = await checkRes.json();
 
     if (Array.isArray(existing) && existing.length > 0) {
       await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=ilike.${encodeURIComponent(name)}`, {
         method: 'PATCH',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json'
-        },
+        headers: authHeaders,
         body: JSON.stringify({ status_pembayaran: status })
       });
     } else {
       await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster`, {
         method: 'POST',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json'
-        },
+        headers: authHeaders,
         body: JSON.stringify({ nama: name, status_pembayaran: status })
       });
     }
@@ -787,6 +825,9 @@ async function handleAdminPaymentSubmit(e) {
         }
       ]);
     } catch (_e2) {}
+
+    // Ensure name is un-blacklisted if previously deleted
+    removeDeletedPaymentName(name);
 
     if (msg) {
       msg.textContent = '✓ Berhasil disimpan!';
@@ -816,14 +857,14 @@ async function togglePaymentStatus(nama, id) {
   const next = row.status_pembayaran === 'lunas' ? 'belum_lunas' : 'lunas';
 
   try {
+    const authHeaders = await getAdminAuthHeaders();
+
     // 1. Direct REST update to participant_paid_roster
     try {
       await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=ilike.${encodeURIComponent(cleanName)}`, {
         method: 'PATCH',
         headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
+          ...authHeaders,
           'Prefer': 'return=representation'
         },
         body: JSON.stringify({ status_pembayaran: next })
@@ -864,86 +905,79 @@ async function togglePaymentStatus(nama, id) {
   }
 }
 
-async function deletePaymentParticipant(nama, id) {
+async function deletePaymentParticipant(nama, id, btnEl) {
   const cleanName = (nama || '').trim();
   if (!cleanName) return;
   if (!confirm(`Hapus data pembayaran peserta "${cleanName}"?`)) return;
 
-  // Immediate visual feedback: remove row from DOM right away
-  const rowEl = document.querySelector(`tr[data-row-user="${encodeURIComponent(cleanName)}"]`);
-  if (rowEl) {
-    rowEl.style.opacity = '0.3';
-    rowEl.style.pointerEvents = 'none';
+  // 1. Immediate visual feedback: remove from DOM and memory instantly
+  const tr = btnEl ? btnEl.closest('tr') : document.querySelector(`tr[data-row-user="${encodeURIComponent(cleanName)}"]`);
+  if (tr) {
+    tr.remove();
   }
 
+  // 2. Add to local blacklist to prevent any resurrection from server cache
+  addDeletedPaymentName(cleanName);
+
+  // 3. Update in-memory data
+  adminPaymentData = adminPaymentData.filter(r => (r.nama || '').toLowerCase().trim() !== cleanName.toLowerCase());
+
+  // 4. Update badge and handle empty table state
+  const badge = $('paymentCountBadge');
+  if (badge) {
+    const lunasCount = adminPaymentData.filter(r => r.status_pembayaran === 'lunas').length;
+    badge.textContent = `${lunasCount}/${adminPaymentData.length} Lunas`;
+  }
+  const body = $('paymentRows');
+  if (body && (!adminPaymentData.length || !body.children.length)) {
+    body.innerHTML = '<tr><td colspan="4" class="empty">Belum ada data pembayaran peserta.</td></tr>';
+  }
+
+  toast(`✓ Data pembayaran "${cleanName}" berhasil dihapus.`);
+
+  // 5. Asynchronously delete permanently from Supabase
   try {
-    // 1. Direct REST DELETE to participant_paid_roster with publishable/anon key
-    // (Verified to successfully delete from Supabase and return representation)
-    const delRes = await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=ilike.${encodeURIComponent(cleanName)}`, {
-      method: 'DELETE',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
-      }
-    });
+    const authHeaders = await getAdminAuthHeaders();
 
-    console.log('Direct DELETE participant_paid_roster status:', delRes.status);
-
-    // 2. Also try delete with exact match
-    await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=eq.${encodeURIComponent(cleanName)}`, {
-      method: 'DELETE',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`
-      }
-    });
-
-    // 3. Clear any seat assigned to this participant in kursi_bus (frees up on website too!)
-    try {
-      await db.from('kursi_bus').update({
-        nama: null,
-        no_hp: null,
-        updated_at: new Date().toISOString()
-      }).ilike('nama', cleanName);
-    } catch (_eSeat) {}
-
-    // 4. Also delete from participant_payments
-    try {
-      if (id && id !== cleanName && id !== 'undefined') {
-        await db.from('participant_payments').delete().eq('id', id);
-      }
-      await db.from('participant_payments').delete().ilike('nama', cleanName);
-      await fetch(`${SUPABASE_URL}/rest/v1/participant_payments?nama=ilike.${encodeURIComponent(cleanName)}`, {
+    // Direct REST DELETE to participant_paid_roster (both ilike and exact eq)
+    await Promise.allSettled([
+      fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=ilike.${encodeURIComponent(cleanName)}`, {
         method: 'DELETE',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
-        }
-      });
-    } catch (_e2) {}
+        headers: authHeaders
+      }),
+      fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=eq.${encodeURIComponent(cleanName)}`, {
+        method: 'DELETE',
+        headers: authHeaders
+      })
+    ]);
 
-    // 5. Update in-memory data and re-render
-    adminPaymentData = adminPaymentData.filter(r => r.nama.toLowerCase().trim() !== cleanName.toLowerCase());
-    renderAdminPaymentRows();
+    // Also delete from participant_payments
+    await Promise.allSettled([
+      fetch(`${SUPABASE_URL}/rest/v1/participant_payments?nama=ilike.${encodeURIComponent(cleanName)}`, {
+        method: 'DELETE',
+        headers: authHeaders
+      }),
+      (id && id !== cleanName && id !== 'undefined') ? db.from('participant_payments').delete().eq('id', id) : null,
+      db.from('participant_payments').delete().ilike('nama', cleanName),
+      db.from('participant_paid_roster').delete().ilike('nama', cleanName)
+    ]);
 
-    toast(`✓ Data pembayaran "${cleanName}" berhasil dihapus.`);
+    // Clear any seat assigned to this participant in kursi_bus (frees up on public website!)
+    await db.from('kursi_bus').update({
+      nama: null,
+      no_hp: null,
+      updated_at: new Date().toISOString()
+    }).ilike('nama', cleanName);
 
-    // 6. Re-sync both payments and bus seats from server
-    setTimeout(async () => {
-      await Promise.allSettled([
-        loadAdminPaymentData(),
-        loadAdminSeats()
-      ]);
-    }, 350);
+    // Also clear attendance record if any
+    try {
+      await db.from('absensi').delete().ilike('nama', cleanName);
+    } catch (_eAtt) {}
+
+    // Synchronize admin seats and stats
+    await loadAdminSeats();
   } catch (err) {
-    console.error('deletePaymentParticipant error:', err);
-    alert('Gagal menghapus data: ' + err.message);
-    if (rowEl) {
-      rowEl.style.opacity = '1';
-      rowEl.style.pointerEvents = 'auto';
-    }
+    console.error('Async deletePaymentParticipant error:', err);
   }
 }
 

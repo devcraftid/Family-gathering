@@ -86,9 +86,9 @@
       </nav>
 
       <!-- Header Action Buttons -->
-      <div style="display:flex; align-items:center; gap:8px">
+      <div class="header-action-group" style="display:flex; align-items:center; gap:8px; flex-shrink:0">
         <button type="button" class="btn ghost header-cs-btn" id="headerCsBtn" title="Hubungi Admin Panitia via WhatsApp" aria-label="Hubungi Admin">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="header-btn-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="header-btn-icon" style="width:18px; height:18px; min-width:18px; min-height:18px; flex-shrink:0; display:inline-block">
             <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
             <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
             <path d="M12 19h4a2 2 0 0 0 2-2v-1"/>
@@ -98,7 +98,7 @@
 
         <!-- Admin Portal Link Button -->
         <a href="admin.html" class="public-admin-btn" id="publicAdminLink" aria-label="Buka Profil Admin" title="Profil Admin">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="header-btn-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="header-btn-icon" style="width:18px; height:18px; min-width:18px; min-height:18px; flex-shrink:0; display:inline-block">
             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
             <circle cx="12" cy="7" r="4"/>
           </svg>
@@ -194,6 +194,10 @@
           <button type="button" class="travel-tab-btn" onclick="showPublicPage('rundown')">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
             <span>Jadwal Rundown</span>
+          </button>
+          <button type="button" class="travel-tab-btn" onclick="showPublicPage('payment-extra')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/><path d="M6 15h2"/><path d="M12 15h4"/></svg>
+            <span>Bayar & Tukar</span>
           </button>
         </div>
 
@@ -320,40 +324,6 @@
               </div>
             </div>
           </article>
-
-          <!-- Card 3 -->
-          <article class="popular-card" onclick="showPublicPage('community')">
-            <div class="popular-card-image">
-              <img src="img/highlight-gather.jpg" alt="Kebersamaan & Ramah Tamah">
-              <span class="popular-badge badge-trending">Trending</span>
-              <div class="popular-card-gradient"></div>
-              <div class="popular-card-overlay">
-                <h3>Kebersamaan Rombongan</h3>
-                <p>Makan Siang · Ramah Tamah</p>
-                <div class="popular-card-meta">
-                  <b>Doorprize & Games</b>
-                  <span>Galeri & Ucapan ↗</span>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- Card 4 -->
-          <article class="popular-card" onclick="showPublicPage('rundown')">
-            <div class="popular-card-image">
-              <img src="img/highlight-date.jpg" alt="Titik Kumpul KP Waringin">
-              <span class="popular-badge badge-seller">Keberangkatan</span>
-              <div class="popular-card-gradient"></div>
-              <div class="popular-card-overlay">
-                <h3>Balai Warga KP Waringin</h3>
-                <p>Titik Kumpul Warga · Pkl 06.00 WIB</p>
-                <div class="popular-card-meta">
-                  <b>1 November 2026</b>
-                  <span>Lihat Rundown ↗</span>
-                </div>
-              </div>
-            </div>
-          </article>
         </div>
       </section>
 
@@ -423,6 +393,19 @@
               <h3>Jadwal Rundown & Panduan</h3>
               <p>Pantau susunan acara dari jam kumpul, perjalanan bus, eksplorasi kawah, makan siang bersama, hingga perjalanan kembali pulang.</p>
               <button class="btn primary" type="button" onclick="showPublicPage('rundown')">Lihat Susunan Acara ↗</button>
+            </div>
+          </article>
+
+          <!-- Card 4 -->
+          <article class="feature-photo-card">
+            <div class="feature-photo-wrap">
+              <span class="feature-number">FITUR 04</span>
+              <img src="img/highlight-bus.jpg" alt="Pembayaran & Tukar Kursi">
+            </div>
+            <div class="feature-body">
+              <h3>Pembayaran & Tukar Kursi</h3>
+              <p>Konfirmasi bukti transfer pembayaran donasi rombongan ke bendahara atau ajukan pertukaran nomor kursi bus bersama keluarga.</p>
+              <button class="btn primary" type="button" onclick="showPublicPage('payment-extra')">Bayar & Tukar Kursi ↗</button>
             </div>
           </article>
         </div>
@@ -1161,6 +1144,7 @@
             <li><a href="javascript:void(0)" onclick="showPublicPage('find')">Denah Bus & Cari Peserta</a></li>
             <li><a href="javascript:void(0)" onclick="showPublicPage('attendance')">Absensi Digital QR</a></li>
             <li><a href="javascript:void(0)" onclick="showPublicPage('rundown')">Susunan Rundown Acara</a></li>
+            <li><a href="javascript:void(0)" onclick="showPublicPage('payment-extra')">Bayar & Tukar Kursi</a></li>
             <li><a href="javascript:void(0)" onclick="showPublicPage('info')">Panduan Perlengkapan</a></li>
           </ul>
         </div>

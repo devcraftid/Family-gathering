@@ -93,6 +93,11 @@
         <span>Data Peserta</span>
       </button>
 
+      <button class="sidebtn" data-page="payments">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/><path d="M6 15h2"/><path d="M12 15h4"/></svg>
+        <span>Data Pembayaran</span>
+      </button>
+
       <button class="sidebtn" data-page="attendance">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
         <span>Absensi QR</span>
@@ -245,6 +250,9 @@
               <div class="quickgrid">
                 <button class="quick qblue" data-goto="participants">
                   <span>＋</span> Tambah Peserta
+                </button>
+                <button class="quick qblue" data-goto="payments">
+                  <span>💳</span> Data Pembayaran
                 </button>
                 <button class="quick qgreen" data-goto="attendance">
                   <span>▣</span> Scan QR Kehadiran
@@ -418,6 +426,83 @@
                 </thead>
                 <tbody id="participantRows">
                   <tr><td colspan="5" class="empty">Memuat data peserta…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             SUBPAGE: DATA PEMBAYARAN & STATUS LUNAS
+             ================================================================== -->
+        <section class="adminpage hidden" id="page-payments">
+          <div class="pagehead">
+            <div>
+              <h1>Verifikasi Pembayaran Peserta</h1>
+              <p>Kelola data status lunas / belum lunas untuk membuka hak akses booking kursi bus.</p>
+            </div>
+            <button class="btn primary" id="openAddPaymentModalBtn" type="button" onclick="document.getElementById('addPaymentBox').classList.toggle('hidden')">
+              <span>＋ Tambah Peserta Lunas</span>
+            </button>
+          </div>
+
+          <!-- Add Payment Participant Card (Expandable) -->
+          <div class="card hidden" id="addPaymentBox" style="margin-bottom:16px">
+            <div class="cardhead">
+              <h3>Tambah Data Status Pembayaran Peserta</h3>
+            </div>
+            <div class="cardbody">
+              <form id="adminPaymentForm">
+                <div class="formgrid">
+                  <div class="field">
+                    <label for="adminPayName">Nama Lengkap Peserta *</label>
+                    <input id="adminPayName" class="input" required placeholder="Contoh: Budi Santoso">
+                  </div>
+                  <div class="field">
+                    <label for="adminPayPhone">Nomor WhatsApp (Opsional)</label>
+                    <input id="adminPayPhone" class="input" placeholder="Contoh: 08123456789">
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="adminPayStatus">Status Pembayaran *</label>
+                  <select id="adminPayStatus" class="input">
+                    <option value="lunas">LUNAS (Dapat Memilih Kursi Bus)</option>
+                    <option value="belum_lunas">BELUM LUNAS (Menunggu Transfer)</option>
+                  </select>
+                </div>
+                <div class="actions">
+                  <button class="btn primary" type="submit">Simpan Data Pembayaran</button>
+                  <button class="btn ghost" type="button" onclick="document.getElementById('addPaymentBox').classList.add('hidden')">Batal</button>
+                </div>
+                <p id="adminPayMsg" class="status" style="margin-top:10px"></p>
+              </form>
+            </div>
+          </div>
+
+          <!-- Payment Table Card -->
+          <div class="card" style="margin-top:16px">
+            <div class="cardhead">
+              <div>
+                <h3>Daftar Status Pembayaran Peserta</h3>
+                <p>Klik tombol untuk mengubah status atau menghapus data peserta.</p>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap">
+                <input id="paymentSearchInput" class="input" style="max-width:220px; font-size:12px" placeholder="⌕ Cari nama peserta…">
+                <span id="paymentCountBadge" class="connection-ok">0 terdata</span>
+              </div>
+            </div>
+            <div class="tablewrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Nama Peserta</th>
+                    <th>No. WhatsApp</th>
+                    <th>Status Pembayaran</th>
+                    <th>Aksi Verifikasi</th>
+                  </tr>
+                </thead>
+                <tbody id="paymentRows">
+                  <tr><td colspan="4" class="empty">Memuat data pembayaran…</td></tr>
                 </tbody>
               </table>
             </div>

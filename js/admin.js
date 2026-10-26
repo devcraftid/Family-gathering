@@ -65,7 +65,8 @@ async function checkAdminAuth() {
     loadAdminAttendance(),
     loadAdminEventSettings(),
     loadAdminRundown(),
-    loadAdminHighlights()
+    loadAdminHighlights(),
+    loadAdminPaymentData()
   ]);
 
   const savedPage = localStorage.getItem('kpw_admin_page_checkpoint') || 'dashboard';
@@ -110,7 +111,7 @@ async function handleAdminLogout() {
 // 2. Navigation
 // --------------------------------------------------------------------------
 function goAdminPage(page) {
-  const validPages = ['dashboard', 'participants', 'attendance', 'seats', 'rundown', 'highlights', 'reports', 'settings'];
+  const validPages = ['dashboard', 'participants', 'payments', 'attendance', 'seats', 'rundown', 'highlights', 'reports', 'settings'];
   const target = validPages.includes(page) ? page : 'dashboard';
 
   try { localStorage.setItem('kpw_admin_page_checkpoint', target); } catch (_e) {}
@@ -125,6 +126,7 @@ function goAdminPage(page) {
 
   if (target === 'seats') renderAdminSeatMaps();
   if (target === 'participants') renderParticipantRows();
+  if (target === 'payments') loadAdminPaymentData();
   if (target === 'attendance') updateAdminAttendanceTable();
   if (target === 'settings') loadAdminEventSettings();
   if (target === 'rundown') loadAdminRundown();
@@ -610,12 +612,23 @@ function renderAdminPaymentRows() {
   const body = $('paymentRows');
   if (!body) return;
 
-  if (!adminPaymentData.length) {
-    body.innerHTML = '<tr><td colspan="4" class="empty">Belum ada data pembayaran peserta.</td></tr>';
+  const q = ($('paymentSearchInput')?.value || '').toLowerCase().trim();
+  const filtered = q
+    ? adminPaymentData.filter(r => (r.nama || '').toLowerCase().includes(q) || (r.no_hp || '').toLowerCase().includes(q))
+    : adminPaymentData;
+
+  const badge = $('paymentCountBadge');
+  if (badge) {
+    const lunasCount = adminPaymentData.filter(r => r.status_pembayaran === 'lunas').length;
+    badge.textContent = `${lunasCount}/${adminPaymentData.length} Lunas`;
+  }
+
+  if (!filtered.length) {
+    body.innerHTML = `<tr><td colspan="4" class="empty">${q ? 'Tidak ada data peserta cocok dengan pencarian.' : 'Belum ada data pembayaran peserta.'}</td></tr>`;
     return;
   }
 
-  body.innerHTML = adminPaymentData.map(r => `
+  body.innerHTML = filtered.map(r => `
     <tr>
       <td><b>${esc(r.nama)}</b></td>
       <td>${esc(r.no_hp || '—')}</td>
@@ -639,6 +652,53 @@ function renderAdminPaymentRows() {
   body.querySelectorAll('[data-del-payment]').forEach(b => {
     b.onclick = () => deletePaymentParticipant(b.dataset.delPayment);
   });
+}
+
+async function handleAdminPaymentSubmit(e) {
+  e.preventDefault();
+  const name = $('adminPayName')?.value.trim();
+  const phone = $('adminPayPhone')?.value.trim() || null;
+  const status = $('adminPayStatus')?.value || 'lunas';
+  const msg = $('adminPayMsg');
+
+  if (!name) {
+    if (msg) msg.textContent = 'Nama lengkap peserta wajib diisi.';
+    return;
+  }
+
+  if (msg) {
+    msg.textContent = 'Menyimpan data…';
+    msg.className = 'status';
+  }
+
+  try {
+    const { error } = await db.from('participant_payments').insert([
+      {
+        nama: name,
+        no_hp: phone,
+        status_pembayaran: status,
+        created_at: new Date().toISOString()
+      }
+    ]);
+    if (error) throw error;
+    if (msg) {
+      msg.textContent = '✓ Berhasil disimpan!';
+      msg.className = 'status connection-ok';
+    }
+    $('adminPaymentForm')?.reset();
+    toast(`Data pembayaran ${name} berhasil disimpan.`);
+    setTimeout(() => {
+      $('addPaymentBox')?.classList.add('hidden');
+      if (msg) msg.textContent = '';
+    }, 1200);
+    await loadAdminPaymentData();
+  } catch (err) {
+    console.error('handleAdminPaymentSubmit:', err);
+    if (msg) {
+      msg.textContent = 'Gagal menyimpan: ' + err.message;
+      msg.className = 'status connection-error';
+    }
+  }
 }
 
 async function togglePaymentStatus(id) {
@@ -1079,6 +1139,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Participant Form
   $('seatForm')?.addEventListener('submit', saveAdminParticipant);
   $('participantSearch')?.addEventListener('input', renderParticipantRows);
+
+  // Payment Form & Search
+  $('adminPaymentForm')?.addEventListener('submit', handleAdminPaymentSubmit);
+  $('paymentSearchInput')?.addEventListener('input', renderAdminPaymentRows);
 
   // Attendance Sessions
   $('startAttendanceSession')?.addEventListener('click', createAdminAttendanceSession);

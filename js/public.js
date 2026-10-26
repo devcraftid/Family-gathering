@@ -170,26 +170,6 @@ const DEFAULT_HIGHLIGHTS = [
     metaLeft: 'Konfigurasi 2–3 Kursi',
     metaRight: 'Pilih Kursi ↗',
     link: 'booking'
-  },
-  {
-    image: 'img/highlight-gather.jpg',
-    badge: 'Trending',
-    badgeClass: 'badge-trending',
-    title: 'Kebersamaan Rombongan',
-    category: 'Makan Siang · Ramah Tamah',
-    metaLeft: 'Doorprize & Games',
-    metaRight: 'Galeri & Ucapan ↗',
-    link: 'community'
-  },
-  {
-    image: 'img/highlight-date.jpg',
-    badge: 'Keberangkatan',
-    badgeClass: 'badge-seller',
-    title: 'Balai Warga KP Waringin',
-    category: 'Titik Kumpul Warga · Pkl 06.00 WIB',
-    metaLeft: '1 November 2026',
-    metaRight: 'Lihat Rundown ↗',
-    link: 'rundown'
   }
 ];
 
@@ -208,7 +188,11 @@ function getPublicHighlights() {
       if (stored) list = JSON.parse(stored);
     } catch (_e) {}
   }
-  return (Array.isArray(list) && list.length === 4) ? list : DEFAULT_HIGHLIGHTS;
+  if (Array.isArray(list) && list.length > 0) {
+    const valid = list.filter(item => item && item.image && item.title);
+    if (valid.length > 0) return valid;
+  }
+  return DEFAULT_HIGHLIGHTS;
 }
 
 function renderPublicPopularHighlights() {
@@ -368,18 +352,23 @@ async function checkPublicBookingPayment() {
   if (statusEl) statusEl.textContent = 'Memeriksa status pembayaran…';
 
   try {
-    const { data: rows, error } = await db.from('participant_paid_roster')
-      .select('nama,status_pembayaran')
-      .ilike('nama', name)
-      .limit(10);
-
-    const payment = (!error && rows) ? rows.find(r => (r.nama || '').trim().toLowerCase() === name.toLowerCase()) : null;
+    let payment = null;
+    const { data: p1 } = await db.from('participant_payments').select('nama,status_pembayaran').ilike('nama', name).limit(10);
+    if (p1 && p1.length) {
+      payment = p1.find(r => (r.nama || '').trim().toLowerCase() === name.toLowerCase());
+    }
+    if (!payment) {
+      const { data: p2 } = await db.from('participant_paid_roster').select('nama,status_pembayaran').ilike('nama', name).limit(10);
+      if (p2 && p2.length) {
+        payment = p2.find(r => (r.nama || '').trim().toLowerCase() === name.toLowerCase());
+      }
+    }
 
     if (payment && payment.status_pembayaran === 'lunas') {
       publicBookingEligible = true;
       if (statusEl) statusEl.innerHTML = `<span style="color:#16a34a; font-weight:750">✓ Pembayaran LUNAS terverifikasi. Silakan pilih nomor kursi kosong di bawah.</span>`;
     } else {
-      if (statusEl) statusEl.innerHTML = `<span style="color:#dc2626; font-weight:700">⚠ Pembayaran belum lunas atau nama belum terdaftar. Hubungi panitia untuk verifikasi pembayaran.</span>`;
+      if (statusEl) statusEl.innerHTML = `<span style="color:#dc2626; font-weight:700">⚠ Pembayaran belum lunas atau nama belum terdaftar. Hubungi panitia atau unggah bukti di menu Bayar & Tukar.</span>`;
     }
   } catch (err) {
     console.warn('checkPayment:', err);
@@ -736,35 +725,37 @@ _Harap kumpul tepat waktu di titik kumpul rombongan warga._`;
 }
 
 function copyAllSeatsWhatsApp() {
-  const loc = stripCiwidey(publicEventSettings.destination || 'Kawah Putih, Bandung');
-  const date = formatEventDate(publicEventSettings.event_date);
-  const meeting = publicEventSettings.meeting_point || 'Balai Warga Kampoeng Waringin';
-  const gather = publicEventSettings.gather_time || '06.00 WIB';
-
   const occupied = publicData
     .filter(r => r.nama && Number(r.nomor_kursi) >= 1 && Number(r.nomor_kursi) <= 59)
     .sort((a, b) => Number(a.nomor_kursi) - Number(b.nomor_kursi));
 
-  let text = `🚌 *DAFTAR KURSI BUS GATHERING WARGA*
-*Family Gathering Kampoeng Waringin 2026*
-📍 Destinasi: ${loc}
-📅 Tanggal: ${date}
-⏰ Titik Kumpul: ${meeting} (${gather})
-💺 *Total Terisi:* ${occupied.length}/59 Kursi (${59 - occupied.length} Tersisa)
-----------------------------------------\n`;
+  const occupiedSet = new Set(occupied.map(r => Number(r.nomor_kursi)));
+  const emptySeats = [];
+  for (let i = 1; i <= 59; i++) {
+    if (!occupiedSet.has(i)) {
+      emptySeats.push(i);
+    }
+  }
 
+  let text = `*DAFTAR KURSI FAMILY GATHERING KP WARINGIN*\n`;
+  text += `🚌 Bus 1 · Kapasitas 59 kursi\n`;
+  text += `Kursi terisi: ${occupied.length}/59\n\n`;
+
+  text += `*Peserta dan Nomor Kursi:*\n`;
   if (occupied.length) {
-    occupied.forEach(r => {
-      text += `• Kursi ${String(r.nomor_kursi).padStart(2, '0')}: *${r.nama}*\n`;
+    occupied.forEach((r, idx) => {
+      text += `${idx + 1}. Kursi ${r.nomor_kursi} — ${r.nama}\n`;
     });
   } else {
     text += `(Belum ada kursi yang terisi)\n`;
   }
 
-  text += `----------------------------------------\n_Pilih kursi mandiri melalui website gathering rombongan warga._`;
+  text += `\n*Kursi kosong (${emptySeats.length}):*\n`;
+  text += `${emptySeats.join(', ')}\n\n`;
+  text += `Data diambil dari halaman publik Family Gathering KP Waringin.`;
 
   navigator.clipboard.writeText(text).then(() => {
-    toast(`✓ Daftar ${occupied.length} kursi berhasil disalin untuk WhatsApp!`);
+    toast(`✓ Format daftar kursi WA berhasil disalin!`);
   }).catch(() => {
     toast('Gagal menyalin daftar kursi.');
   });
@@ -939,6 +930,58 @@ document.addEventListener('DOMContentLoaded', () => {
   $('copyPublicRundownBtn')?.addEventListener('click', copyRundownWhatsApp);
   $('copyAllSeatsWaBtn')?.addEventListener('click', copyAllSeatsWhatsApp);
   $('copyAttendanceListWaBtn')?.addEventListener('click', copyAttendanceListWhatsApp);
+
+  // Proof of Payment & Seat Swap Form Handlers
+  $('publicProofForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = ($('proofName')?.value || '').trim();
+    const amount = ($('proofAmount')?.value || '').trim();
+    const msgEl = $('proofPublicMsg');
+    if (!name || !amount) return;
+    const formattedAmount = Number(amount).toLocaleString('id-ID');
+    const waText = `Halo Bendahara Panitia Family Gathering Kampoeng Waringin,%0ASaya *${encodeURIComponent(name)}* konfirmasi bukti transfer sebesar *Rp ${encodeURIComponent(formattedAmount)}* untuk pembayaran Family Gathering Kawah Putih. Mohon verifikasi status LUNAS saya untuk reservasi kursi bus. Terima kasih!`;
+    if (msgEl) {
+      msgEl.innerHTML = `
+        <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:12px 14px; margin-top:8px">
+          <div style="color:#065f46; font-weight:800; font-size:13px">✓ Bukti Pembayaran Disiapkan!</div>
+          <div style="color:#047857; font-size:12px; margin-top:2px">Atas nama <b>${esc(name)}</b> (Rp ${formattedAmount}). Silakan kirim langsung ke WhatsApp Bendahara:</div>
+          <div class="wa-action-row" style="margin-top:10px">
+            <button type="button" class="btn primary btn-wa-share" onclick="window.open('https://wa.me/62895329043389?text=${waText}', '_blank', 'noopener')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              <span>Kirim Bukti ke WA Bendahara</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+    toast('Form bukti disiapkan!');
+  });
+
+  $('publicSwapForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = ($('swapRequester')?.value || '').trim();
+    const from = ($('swapFrom')?.value || '').trim();
+    const to = ($('swapTo')?.value || '').trim();
+    const reason = ($('swapReason')?.value || '').trim();
+    const msgEl = $('swapPublicMsg');
+    if (!name || !from || !to) return;
+    const waText = `Halo Panitia Family Gathering Kampoeng Waringin,%0ASaya *${encodeURIComponent(name)}* (Kursi %23${encodeURIComponent(from)}) mengajukan permohonan tukar nomor kursi ke *Kursi %23${encodeURIComponent(to)}*.%0AAlasan: ${encodeURIComponent(reason || '-')}.%0AMohon bantuannya. Terima kasih!`;
+    if (msgEl) {
+      msgEl.innerHTML = `
+        <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:12px 14px; margin-top:8px">
+          <div style="color:#1e40af; font-weight:800; font-size:13px">✓ Pengajuan Tukar Kursi Disiapkan!</div>
+          <div style="color:#1d4ed8; font-size:12px; margin-top:2px">Dari Kursi <b>#${esc(from)}</b> ke Kursi <b>#${esc(to)}</b> atas nama <b>${esc(name)}</b>.</div>
+          <div class="wa-action-row" style="margin-top:10px">
+            <button type="button" class="btn primary btn-wa-share" onclick="window.open('https://wa.me/62895329043389?text=${waText}', '_blank', 'noopener')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              <span>Kirim Permintaan ke WA Panitia</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+    toast('Pengajuan tukar disiapkan!');
+  });
 
   // Hubungi Admin WhatsApp Button Handlers
   const openCsWhatsApp = () => {

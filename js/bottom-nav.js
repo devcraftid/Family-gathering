@@ -63,6 +63,14 @@ const PUBLIC_MENUS = [
     bg: '#fff1f2'
   },
   {
+    id: 'payment-extra',
+    title: 'Bayar & Tukar Kursi',
+    subtitle: 'Kirim bukti transfer pembayaran & ajukan request tukar nomor kursi',
+    icon: 'payment',
+    color: '#0284c7',
+    bg: '#f0f9ff'
+  },
+  {
     id: 'cs-help',
     title: 'Hubungi Admin',
     subtitle: 'Bantuan via WhatsApp langsung ke panitia untuk kendala & pertanyaan',

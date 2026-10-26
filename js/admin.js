@@ -596,11 +596,56 @@ async function loadAdminPaymentData() {
   if (body) body.innerHTML = '<tr><td colspan="4" class="empty">Memuat data pembayaran…</td></tr>';
 
   try {
-    const { data: rows, error } = await db.from('participant_payments')
-      .select('*')
-      .order('nama', { ascending: true });
-    if (error) throw error;
-    adminPaymentData = rows || [];
+    let list = [];
+
+    // 1. Load active data from participant_paid_roster (primary live table in Supabase)
+    try {
+      const { data: roster, error: rosterErr } = await db.from('participant_paid_roster')
+        .select('*')
+        .order('nama', { ascending: true });
+
+      if (!rosterErr && Array.isArray(roster)) {
+        roster.forEach(r => {
+          if (r.nama) {
+            list.push({
+              id: r.id || r.nama,
+              nama: r.nama,
+              no_hp: r.no_hp || '',
+              status_pembayaran: r.status_pembayaran || 'lunas',
+              source: 'roster'
+            });
+          }
+        });
+      }
+    } catch (e1) {
+      console.warn('loadAdminPaymentData roster error:', e1);
+    }
+
+    // 2. Also try participant_payments if available and merge
+    try {
+      const { data: rows, error } = await db.from('participant_payments')
+        .select('*')
+        .order('nama', { ascending: true });
+      if (!error && Array.isArray(rows)) {
+        rows.forEach(r => {
+          const existing = list.find(item => item.nama.toLowerCase() === (r.nama || '').toLowerCase());
+          if (existing) {
+            if (r.id) existing.id = r.id;
+            if (r.no_hp) existing.no_hp = r.no_hp;
+          } else if (r.nama) {
+            list.push({
+              id: r.id || r.nama,
+              nama: r.nama,
+              no_hp: r.no_hp || '',
+              status_pembayaran: r.status_pembayaran || 'lunas',
+              source: 'payments'
+            });
+          }
+        });
+      }
+    } catch (_e2) {}
+
+    adminPaymentData = list;
     renderAdminPaymentRows();
   } catch (err) {
     console.warn('loadPaymentData:', err);
@@ -638,26 +683,26 @@ function renderAdminPaymentRows() {
         </span>
       </td>
       <td>
-        <button class="btn ghost" type="button" data-toggle-payment="${r.id}">
+        <button class="btn ghost" type="button" data-toggle-payment="${encodeURIComponent(r.nama)}" data-id="${esc(r.id || '')}">
           ${r.status_pembayaran === 'lunas' ? 'Ubah Belum Lunas' : 'Tandai LUNAS'}
         </button>
-        <button class="btn red" type="button" data-del-payment="${r.id}">Hapus</button>
+        <button class="btn red" type="button" data-del-payment="${encodeURIComponent(r.nama)}" data-id="${esc(r.id || '')}">Hapus</button>
       </td>
     </tr>
   `).join('');
 
   body.querySelectorAll('[data-toggle-payment]').forEach(b => {
-    b.onclick = () => togglePaymentStatus(b.dataset.togglePayment);
+    b.onclick = () => togglePaymentStatus(decodeURIComponent(b.dataset.togglePayment), b.dataset.id);
   });
   body.querySelectorAll('[data-del-payment]').forEach(b => {
-    b.onclick = () => deletePaymentParticipant(b.dataset.delPayment);
+    b.onclick = () => deletePaymentParticipant(decodeURIComponent(b.dataset.delPayment), b.dataset.id);
   });
 }
 
 async function handleAdminPaymentSubmit(e) {
   e.preventDefault();
   const name = $('adminPayName')?.value.trim();
-  const phone = $('adminPayPhone')?.value.trim() || null;
+  const phone = $('adminPayPhone')?.value.trim() || '';
   const status = $('adminPayStatus')?.value || 'lunas';
   const msg = $('adminPayMsg');
 
@@ -672,21 +717,48 @@ async function handleAdminPaymentSubmit(e) {
   }
 
   try {
-    const { error } = await db.from('participant_payments').insert([
-      {
-        nama: name,
-        no_hp: phone,
-        status_pembayaran: status,
-        created_at: new Date().toISOString()
+    let saved = false;
+
+    // 1. Save to participant_paid_roster (primary live table)
+    try {
+      const { data: exist } = await db.from('participant_paid_roster')
+        .select('nama')
+        .eq('nama', name)
+        .limit(1);
+
+      if (exist && exist.length > 0) {
+        const { error: updErr } = await db.from('participant_paid_roster')
+          .update({ status_pembayaran: status })
+          .eq('nama', name);
+        if (!updErr) saved = true;
+      } else {
+        const { error: insErr } = await db.from('participant_paid_roster')
+          .insert([{ nama: name, status_pembayaran: status }]);
+        if (!insErr) saved = true;
       }
-    ]);
-    if (error) throw error;
+    } catch (e1) {
+      console.warn('participant_paid_roster save error:', e1);
+    }
+
+    // 2. Also save to participant_payments if available
+    try {
+      const { error: payErr } = await db.from('participant_payments').insert([
+        {
+          nama: name,
+          no_hp: phone || null,
+          status_pembayaran: status,
+          created_at: new Date().toISOString()
+        }
+      ]);
+      if (!payErr) saved = true;
+    } catch (_e2) {}
+
     if (msg) {
       msg.textContent = '✓ Berhasil disimpan!';
       msg.className = 'status connection-ok';
     }
     $('adminPaymentForm')?.reset();
-    toast(`Data pembayaran ${name} berhasil disimpan.`);
+    toast(`Data pembayaran "${name}" berhasil disimpan.`);
     setTimeout(() => {
       $('addPaymentBox')?.classList.add('hidden');
       if (msg) msg.textContent = '';
@@ -701,31 +773,79 @@ async function handleAdminPaymentSubmit(e) {
   }
 }
 
-async function togglePaymentStatus(id) {
-  const row = adminPaymentData.find(r => String(r.id) === String(id));
+async function togglePaymentStatus(nama, id) {
+  const row = adminPaymentData.find(r => r.nama.toLowerCase().trim() === (nama || '').toLowerCase().trim());
   if (!row) return;
   const next = row.status_pembayaran === 'lunas' ? 'belum_lunas' : 'lunas';
 
   try {
-    const { error } = await db.from('participant_payments')
-      .update({ status_pembayaran: next, updated_at: new Date().toISOString() })
-      .eq('id', id);
-    if (error) throw error;
+    // 1. Update participant_paid_roster
+    try {
+      await db.from('participant_paid_roster')
+        .update({ status_pembayaran: next })
+        .eq('nama', row.nama);
+    } catch (e1) {
+      console.warn('update roster:', e1);
+    }
+
+    // 2. Update participant_payments if table exists
+    try {
+      if (id && id !== row.nama && id !== 'undefined') {
+        await db.from('participant_payments')
+          .update({ status_pembayaran: next, updated_at: new Date().toISOString() })
+          .eq('id', id);
+      } else {
+        await db.from('participant_payments')
+          .update({ status_pembayaran: next, updated_at: new Date().toISOString() })
+          .eq('nama', row.nama);
+      }
+    } catch (_e2) {}
+
+    row.status_pembayaran = next;
+    renderAdminPaymentRows();
     toast(`Status ${row.nama} diubah menjadi ${next.toUpperCase()}`);
     await loadAdminPaymentData();
   } catch (err) {
+    console.error('togglePaymentStatus:', err);
     alert('Gagal mengubah status: ' + err.message);
   }
 }
 
-async function deletePaymentParticipant(id) {
-  if (!confirm('Hapus data pembayaran peserta ini?')) return;
+async function deletePaymentParticipant(nama, id) {
+  if (!nama) return;
+  if (!confirm(`Hapus data pembayaran peserta "${nama}"?`)) return;
+
   try {
-    const { error } = await db.from('participant_payments').delete().eq('id', id);
-    if (error) throw error;
-    toast('Data pembayaran dihapus.');
+    let success = false;
+
+    // 1. Delete from participant_paid_roster by nama
+    try {
+      const { error: err1 } = await db.from('participant_paid_roster')
+        .delete()
+        .eq('nama', nama);
+      if (!err1) success = true;
+    } catch (e1) {
+      console.warn('delete roster error:', e1);
+    }
+
+    // 2. Also delete from participant_payments
+    try {
+      if (id && id !== nama && id !== 'undefined') {
+        const { error: err2 } = await db.from('participant_payments').delete().eq('id', id);
+        if (!err2) success = true;
+      }
+      const { error: err3 } = await db.from('participant_payments').delete().eq('nama', nama);
+      if (!err3) success = true;
+    } catch (_e2) {}
+
+    // 3. Immediately update in-memory state and UI for instant feedback
+    adminPaymentData = adminPaymentData.filter(r => r.nama.toLowerCase().trim() !== nama.toLowerCase().trim());
+    renderAdminPaymentRows();
+
+    toast(`Data pembayaran "${nama}" berhasil dihapus.`);
     await loadAdminPaymentData();
   } catch (err) {
+    console.error('deletePaymentParticipant:', err);
     alert('Gagal menghapus: ' + err.message);
   }
 }

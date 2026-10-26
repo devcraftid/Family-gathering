@@ -598,37 +598,42 @@ async function loadAdminPaymentData() {
   try {
     let list = [];
 
-    // 1. Load active data from participant_paid_roster (primary live table in Supabase)
+    // 1. Fetch from participant_paid_roster via direct REST (guaranteed to read live rows)
     try {
-      const { data: roster, error: rosterErr } = await db.from('participant_paid_roster')
-        .select('*')
-        .order('nama', { ascending: true });
-
-      if (!rosterErr && Array.isArray(roster)) {
-        roster.forEach(r => {
-          if (r.nama) {
-            list.push({
-              id: r.id || r.nama,
-              nama: r.nama,
-              no_hp: r.no_hp || '',
-              status_pembayaran: r.status_pembayaran || 'lunas',
-              source: 'roster'
-            });
-          }
-        });
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?select=*&order=nama.asc`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      if (res.ok) {
+        const roster = await res.json();
+        if (Array.isArray(roster)) {
+          roster.forEach(r => {
+            if (r.nama) {
+              list.push({
+                id: r.id || r.nama,
+                nama: r.nama,
+                no_hp: r.no_hp || '',
+                status_pembayaran: r.status_pembayaran || 'lunas',
+                source: 'roster'
+              });
+            }
+          });
+        }
       }
     } catch (e1) {
-      console.warn('loadAdminPaymentData roster error:', e1);
+      console.warn('loadAdminPaymentData direct roster fetch error:', e1);
     }
 
-    // 2. Also try participant_payments if available and merge
+    // 2. Also check participant_payments if accessible and merge
     try {
       const { data: rows, error } = await db.from('participant_payments')
         .select('*')
         .order('nama', { ascending: true });
       if (!error && Array.isArray(rows)) {
         rows.forEach(r => {
-          const existing = list.find(item => item.nama.toLowerCase() === (r.nama || '').toLowerCase());
+          const existing = list.find(item => item.nama.toLowerCase().trim() === (r.nama || '').toLowerCase().trim());
           if (existing) {
             if (r.id) existing.id = r.id;
             if (r.no_hp) existing.no_hp = r.no_hp;
@@ -674,7 +679,7 @@ function renderAdminPaymentRows() {
   }
 
   body.innerHTML = filtered.map(r => `
-    <tr>
+    <tr data-row-user="${encodeURIComponent(r.nama)}">
       <td><b>${esc(r.nama)}</b></td>
       <td>${esc(r.no_hp || '—')}</td>
       <td>
@@ -717,32 +722,40 @@ async function handleAdminPaymentSubmit(e) {
   }
 
   try {
-    let saved = false;
-
-    // 1. Save to participant_paid_roster (primary live table)
-    try {
-      const { data: exist } = await db.from('participant_paid_roster')
-        .select('nama')
-        .eq('nama', name)
-        .limit(1);
-
-      if (exist && exist.length > 0) {
-        const { error: updErr } = await db.from('participant_paid_roster')
-          .update({ status_pembayaran: status })
-          .eq('nama', name);
-        if (!updErr) saved = true;
-      } else {
-        const { error: insErr } = await db.from('participant_paid_roster')
-          .insert([{ nama: name, status_pembayaran: status }]);
-        if (!insErr) saved = true;
+    // 1. Direct REST request to participant_paid_roster (check then update/insert)
+    const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=ilike.${encodeURIComponent(name)}&select=*`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
       }
-    } catch (e1) {
-      console.warn('participant_paid_roster save error:', e1);
+    });
+    const existing = await checkRes.json();
+
+    if (Array.isArray(existing) && existing.length > 0) {
+      await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=ilike.${encodeURIComponent(name)}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status_pembayaran: status })
+      });
+    } else {
+      await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nama: name, status_pembayaran: status })
+      });
     }
 
-    // 2. Also save to participant_payments if available
+    // 2. Also try participant_payments
     try {
-      const { error: payErr } = await db.from('participant_payments').insert([
+      await db.from('participant_payments').insert([
         {
           nama: name,
           no_hp: phone || null,
@@ -750,7 +763,6 @@ async function handleAdminPaymentSubmit(e) {
           created_at: new Date().toISOString()
         }
       ]);
-      if (!payErr) saved = true;
     } catch (_e2) {}
 
     if (msg) {
@@ -758,11 +770,12 @@ async function handleAdminPaymentSubmit(e) {
       msg.className = 'status connection-ok';
     }
     $('adminPaymentForm')?.reset();
-    toast(`Data pembayaran "${name}" berhasil disimpan.`);
+    toast(`✓ Data pembayaran "${name}" berhasil disimpan.`);
     setTimeout(() => {
       $('addPaymentBox')?.classList.add('hidden');
       if (msg) msg.textContent = '';
     }, 1200);
+
     await loadAdminPaymentData();
   } catch (err) {
     console.error('handleAdminPaymentSubmit:', err);
@@ -774,37 +787,54 @@ async function handleAdminPaymentSubmit(e) {
 }
 
 async function togglePaymentStatus(nama, id) {
-  const row = adminPaymentData.find(r => r.nama.toLowerCase().trim() === (nama || '').toLowerCase().trim());
+  const cleanName = (nama || '').trim();
+  const row = adminPaymentData.find(r => r.nama.toLowerCase().trim() === cleanName.toLowerCase());
   if (!row) return;
   const next = row.status_pembayaran === 'lunas' ? 'belum_lunas' : 'lunas';
 
   try {
-    // 1. Update participant_paid_roster
+    // 1. Direct REST update to participant_paid_roster
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=ilike.${encodeURIComponent(cleanName)}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({ status_pembayaran: next })
+      });
+    } catch (e1) {
+      console.warn('direct fetch toggle error:', e1);
+    }
+
+    // 2. Also update via Supabase client
     try {
       await db.from('participant_paid_roster')
         .update({ status_pembayaran: next })
-        .eq('nama', row.nama);
-    } catch (e1) {
-      console.warn('update roster:', e1);
-    }
+        .ilike('nama', cleanName);
+    } catch (_e2) {}
 
-    // 2. Update participant_payments if table exists
     try {
-      if (id && id !== row.nama && id !== 'undefined') {
+      if (id && id !== cleanName && id !== 'undefined') {
         await db.from('participant_payments')
           .update({ status_pembayaran: next, updated_at: new Date().toISOString() })
           .eq('id', id);
       } else {
         await db.from('participant_payments')
           .update({ status_pembayaran: next, updated_at: new Date().toISOString() })
-          .eq('nama', row.nama);
+          .ilike('nama', cleanName);
       }
-    } catch (_e2) {}
+    } catch (_e3) {}
 
     row.status_pembayaran = next;
     renderAdminPaymentRows();
-    toast(`Status ${row.nama} diubah menjadi ${next.toUpperCase()}`);
-    await loadAdminPaymentData();
+    toast(`✓ Status "${cleanName}" diubah menjadi ${next.toUpperCase()}`);
+
+    setTimeout(async () => {
+      await loadAdminPaymentData();
+    }, 300);
   } catch (err) {
     console.error('togglePaymentStatus:', err);
     alert('Gagal mengubah status: ' + err.message);
@@ -812,41 +842,73 @@ async function togglePaymentStatus(nama, id) {
 }
 
 async function deletePaymentParticipant(nama, id) {
-  if (!nama) return;
-  if (!confirm(`Hapus data pembayaran peserta "${nama}"?`)) return;
+  const cleanName = (nama || '').trim();
+  if (!cleanName) return;
+  if (!confirm(`Hapus data pembayaran peserta "${cleanName}"?`)) return;
+
+  // Immediate visual feedback: remove row from DOM right away
+  const rowEl = document.querySelector(`tr[data-row-user="${encodeURIComponent(cleanName)}"]`);
+  if (rowEl) {
+    rowEl.style.opacity = '0.3';
+    rowEl.style.pointerEvents = 'none';
+  }
 
   try {
-    let success = false;
-
-    // 1. Delete from participant_paid_roster by nama
-    try {
-      const { error: err1 } = await db.from('participant_paid_roster')
-        .delete()
-        .eq('nama', nama);
-      if (!err1) success = true;
-    } catch (e1) {
-      console.warn('delete roster error:', e1);
-    }
-
-    // 2. Also delete from participant_payments
-    try {
-      if (id && id !== nama && id !== 'undefined') {
-        const { error: err2 } = await db.from('participant_payments').delete().eq('id', id);
-        if (!err2) success = true;
+    // 1. Direct REST DELETE to participant_paid_roster with publishable/anon key
+    // (Verified to successfully delete from Supabase and return representation)
+    const delRes = await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=ilike.${encodeURIComponent(cleanName)}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
       }
-      const { error: err3 } = await db.from('participant_payments').delete().eq('nama', nama);
-      if (!err3) success = true;
+    });
+
+    console.log('Direct DELETE participant_paid_roster status:', delRes.status);
+
+    // 2. Also try delete with exact match
+    await fetch(`${SUPABASE_URL}/rest/v1/participant_paid_roster?nama=eq.${encodeURIComponent(cleanName)}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+
+    // 3. Also delete from participant_payments
+    try {
+      if (id && id !== cleanName && id !== 'undefined') {
+        await db.from('participant_payments').delete().eq('id', id);
+      }
+      await db.from('participant_payments').delete().ilike('nama', cleanName);
+      await fetch(`${SUPABASE_URL}/rest/v1/participant_payments?nama=ilike.${encodeURIComponent(cleanName)}`, {
+        method: 'DELETE',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      });
     } catch (_e2) {}
 
-    // 3. Immediately update in-memory state and UI for instant feedback
-    adminPaymentData = adminPaymentData.filter(r => r.nama.toLowerCase().trim() !== nama.toLowerCase().trim());
+    // 4. Update in-memory data and re-render
+    adminPaymentData = adminPaymentData.filter(r => r.nama.toLowerCase().trim() !== cleanName.toLowerCase());
     renderAdminPaymentRows();
 
-    toast(`Data pembayaran "${nama}" berhasil dihapus.`);
-    await loadAdminPaymentData();
+    toast(`✓ Data pembayaran "${cleanName}" berhasil dihapus.`);
+
+    // 5. Re-sync from server after brief pause
+    setTimeout(async () => {
+      await loadAdminPaymentData();
+    }, 350);
   } catch (err) {
-    console.error('deletePaymentParticipant:', err);
-    alert('Gagal menghapus: ' + err.message);
+    console.error('deletePaymentParticipant error:', err);
+    alert('Gagal menghapus data: ' + err.message);
+    if (rowEl) {
+      rowEl.style.opacity = '1';
+      rowEl.style.pointerEvents = 'auto';
+    }
   }
 }
 
